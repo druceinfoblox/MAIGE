@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Radar, Users, Server, Globe, AlertTriangle, Info, AlertOctagon, ChevronRight } from 'lucide-react';
+import { Radar, Users, Server, Globe, AlertTriangle, Info, AlertOctagon, ChevronRight, TrendingUp } from 'lucide-react';
 import type { View } from '@/pages/Index';
 import { MetricCard } from '@/components/MetricCard';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import { summaryMetrics, aiTools } from '@/data/mock';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell, PieChart, Pie } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell, PieChart, Pie, LineChart, Line } from 'recharts';
 
 const timeRanges = ['Last 7d', '30d', '90d', 'All'];
 
