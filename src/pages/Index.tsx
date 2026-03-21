@@ -18,24 +18,28 @@ const viewTitles: Record<View, string> = {
   exposures: 'External Exposures',
 };
 
-const views: Record<View, React.ComponentType> = {
-  dashboard: DashboardView,
-  graph: GraphView,
-  tools: ToolsView,
-  users: UsersView,
-  agents: AgentsView,
-  exposures: ExposuresView,
-};
+export type { View };
 
 const Index = () => {
   const [activeView, setActiveView] = useState<View>('dashboard');
-  const ActiveComponent = views[activeView];
 
   return (
     <div className="min-h-screen bg-background">
       <AppSidebar activeView={activeView} onNavigate={setActiveView} />
       <main className="ml-64 p-8">
-        <ActiveComponent />
+        {activeView === 'dashboard' ? (
+          <DashboardView onNavigate={setActiveView} />
+        ) : activeView === 'graph' ? (
+          <GraphView />
+        ) : activeView === 'tools' ? (
+          <ToolsView />
+        ) : activeView === 'users' ? (
+          <UsersView />
+        ) : activeView === 'agents' ? (
+          <AgentsView />
+        ) : (
+          <ExposuresView />
+        )}
       </main>
     </div>
   );

@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Radar, Users, Server, Globe, AlertTriangle, Info, AlertOctagon } from 'lucide-react';
+import { Radar, Users, Server, Globe, AlertTriangle, Info, AlertOctagon, ChevronRight } from 'lucide-react';
+import type { View } from '@/pages/Index';
 import { MetricCard } from '@/components/MetricCard';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import { summaryMetrics, aiTools } from '@/data/mock';
@@ -17,7 +18,6 @@ const trendData = [
   { day: 'Sun', queries: 9800 },
 ];
 
-// Top tools by DNS query volume
 const topToolsData = aiTools
   .sort((a, b) => b.requests - a.requests)
   .slice(0, 6)
@@ -33,20 +33,20 @@ const toolBarColors: Record<string, string> = {
   unsanctioned: 'hsl(0, 72%, 51%)',
 };
 
-// Classification pie data
 const classificationData = [
   { name: 'Approved', value: aiTools.filter(t => t.status === 'approved').length, color: 'hsl(144, 100%, 37%)' },
   { name: 'Unknown', value: aiTools.filter(t => t.status === 'unknown').length, color: 'hsl(200, 80%, 55%)' },
   { name: 'Unsanctioned', value: aiTools.filter(t => t.status === 'unsanctioned').length, color: 'hsl(0, 72%, 51%)' },
 ];
 
-const insights = [
+const insights: { icon: typeof AlertOctagon; iconColor: string; borderColor: string; bgColor: string; text: string; navigateTo: View }[] = [
   {
     icon: AlertOctagon,
     iconColor: 'text-destructive',
     borderColor: 'border-destructive/40',
     bgColor: 'bg-destructive/8',
     text: '1 public MCP endpoint exposed — mcp.acme.com is unauthenticated and internet-facing.',
+    navigateTo: 'exposures',
   },
   {
     icon: AlertTriangle,
@@ -54,6 +54,7 @@ const insights = [
     borderColor: 'border-warning/40',
     bgColor: 'bg-warning/8',
     text: `${summaryMetrics.shadowAIUsers} users accessing unsanctioned tools — Perplexity AI, Mistral, and 3 others.`,
+    navigateTo: 'users',
   },
   {
     icon: AlertTriangle,
@@ -61,6 +62,7 @@ const insights = [
     borderColor: 'border-warning/30',
     bgColor: 'bg-warning/5',
     text: '2 internal agent services unclassified — agent-gw.corp and llm-proxy.internal.',
+    navigateTo: 'agents',
   },
   {
     icon: Info,
@@ -68,10 +70,11 @@ const insights = [
     borderColor: 'border-[hsl(var(--info))]/30',
     bgColor: 'bg-[hsl(var(--info))]/5',
     text: '6 new AI tools discovered in DNS this week — Mistral, Groq, Cohere, and 3 others.',
+    navigateTo: 'tools',
   },
 ];
 
-export const DashboardView = () => {
+export const DashboardView = ({ onNavigate }: { onNavigate: (view: View) => void }) => {
   const [activeRange, setActiveRange] = useState('Last 7d');
 
   return (
@@ -102,10 +105,10 @@ export const DashboardView = () => {
 
       {/* Metric cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-        <MetricCard label="AI Tools Detected" value={34} icon={<Radar size={20} />} change="+6 new this week" delay={0} />
-        <MetricCard label="Users with AI Activity" value={218} icon={<Users size={20} />} change="67% of org" delay={0.07} />
-        <MetricCard label="Internal Agents" value={11} icon={<Server size={20} />} change="+2 unclassified" variant="warning" delay={0.14} />
-        <MetricCard label="External Exposures" value={summaryMetrics.externalExposures} icon={<Globe size={20} />} change="1 critical" variant="critical" delay={0.21} />
+        <MetricCard label="AI Tools Detected" value={34} icon={<Radar size={20} />} change="+6 new this week" delay={0} onClick={() => onNavigate('tools')} />
+        <MetricCard label="Users with AI Activity" value={218} icon={<Users size={20} />} change="67% of org" delay={0.07} onClick={() => onNavigate('users')} />
+        <MetricCard label="Internal Agents" value={11} icon={<Server size={20} />} change="+2 unclassified" variant="warning" delay={0.14} onClick={() => onNavigate('agents')} />
+        <MetricCard label="External Exposures" value={summaryMetrics.externalExposures} icon={<Globe size={20} />} change="1 critical" variant="critical" delay={0.21} onClick={() => onNavigate('exposures')} />
       </div>
 
       {/* Insights + Top Tools side by side */}
@@ -118,10 +121,12 @@ export const DashboardView = () => {
               {insights.map((insight, i) => (
                 <div
                   key={i}
-                  className={`flex items-start gap-3 p-3.5 rounded-lg border ${insight.borderColor} ${insight.bgColor}`}
+                  onClick={() => onNavigate(insight.navigateTo)}
+                  className={`flex items-center gap-3 p-3.5 rounded-lg border cursor-pointer transition-all duration-150 hover:brightness-125 active:scale-[0.99] ${insight.borderColor} ${insight.bgColor}`}
                 >
                   <insight.icon size={16} className={`${insight.iconColor} mt-0.5 flex-shrink-0`} />
-                  <p className="text-sm text-card-foreground leading-relaxed">{insight.text}</p>
+                  <p className="text-sm text-card-foreground leading-relaxed flex-1">{insight.text}</p>
+                  <ChevronRight size={14} className="text-muted-foreground flex-shrink-0" />
                 </div>
               ))}
             </div>
