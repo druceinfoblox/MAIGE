@@ -83,8 +83,8 @@ export const DashboardView = () => {
                 <AreaChart data={trendData}>
                   <defs>
                     <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="hsl(173, 58%, 39%)" stopOpacity={0.2} />
-                      <stop offset="100%" stopColor="hsl(173, 58%, 39%)" stopOpacity={0} />
+                      <stop offset="0%" stopColor="hsl(172, 100%, 39%)" stopOpacity={0.2} />
+                      <stop offset="100%" stopColor="hsl(172, 100%, 39%)" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 13%, 88%)" />
@@ -94,7 +94,7 @@ export const DashboardView = () => {
                     contentStyle={{ background: 'hsl(0, 0%, 100%)', border: '1px solid hsl(220, 13%, 88%)', borderRadius: '8px', fontSize: '12px' }}
                     formatter={(value: number) => [value.toLocaleString(), 'Requests']}
                   />
-                  <Area type="monotone" dataKey="requests" stroke="hsl(173, 58%, 39%)" strokeWidth={2} fill="url(#areaGradient)" />
+                  <Area type="monotone" dataKey="requests" stroke="hsl(172, 100%, 39%)" strokeWidth={2} fill="url(#areaGradient)" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>

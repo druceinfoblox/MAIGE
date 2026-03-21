@@ -1,4 +1,4 @@
-import { LayoutDashboard, Radar, Users, Server, Globe, Shield } from 'lucide-react';
+import { LayoutDashboard, Radar, Users, Server, Globe } from 'lucide-react';
 
 type View = 'dashboard' | 'tools' | 'users' | 'agents' | 'exposures';
 
@@ -15,20 +15,34 @@ const navItems: { id: View; label: string; icon: typeof LayoutDashboard }[] = [
   { id: 'exposures', label: 'Exposures', icon: Globe },
 ];
 
+const InfobloxLogo = () => (
+  <svg viewBox="0 0 140 24" className="h-5 w-auto" aria-label="Infoblox">
+    <text
+      x="0"
+      y="19"
+      fontFamily="'DM Sans', system-ui, sans-serif"
+      fontSize="22"
+      fontWeight="700"
+      letterSpacing="-0.5"
+      fill="hsl(172, 100%, 39%)"
+    >
+      infoblox
+    </text>
+  </svg>
+);
+
 export const AppSidebar = ({ activeView, onNavigate }: Props) => {
   return (
     <aside className="fixed left-0 top-0 bottom-0 w-64 bg-sidebar flex flex-col z-50">
-      <div className="flex items-center gap-2.5 px-6 py-5 border-b border-sidebar-border">
-        <div className="w-8 h-8 rounded-lg bg-sidebar-primary flex items-center justify-center">
-          <Shield className="w-4.5 h-4.5 text-sidebar-primary-foreground" size={18} />
-        </div>
-        <div>
-          <h1 className="text-sm font-semibold text-sidebar-accent-foreground tracking-tight">AgentSight</h1>
-          <p className="text-[11px] text-sidebar-muted">AI Visibility Platform</p>
-        </div>
+      <div className="flex items-center gap-3 px-6 py-5 border-b border-sidebar-border">
+        <InfobloxLogo />
       </div>
 
-      <nav className="flex-1 px-3 py-4 space-y-0.5">
+      <div className="px-5 pt-5 pb-2">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-sidebar-muted">AI Visibility</p>
+      </div>
+
+      <nav className="flex-1 px-3 py-1 space-y-0.5">
         {navItems.map((item) => {
           const isActive = activeView === item.id;
           return (
@@ -42,7 +56,7 @@ export const AppSidebar = ({ activeView, onNavigate }: Props) => {
                 }
               `}
             >
-              <item.icon size={18} className={isActive ? 'text-sidebar-primary' : ''} />
+              <item.icon size={18} className={isActive ? 'text-primary' : ''} />
               {item.label}
             </button>
           );
