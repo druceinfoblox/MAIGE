@@ -24,6 +24,7 @@ export const ToolsView = () => {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [sort, setSort] = useState<SortState<SortKey>>(null);
+  const [selectedTool, setSelectedTool] = useState<AITool | null>(null);
 
   const filtered = useMemo(() => {
     let data = aiTools.filter(t => {
