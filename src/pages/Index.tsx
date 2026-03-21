@@ -9,6 +9,15 @@ import { GraphView } from '@/views/GraphView';
 
 type View = 'dashboard' | 'tools' | 'users' | 'agents' | 'exposures' | 'graph';
 
+const viewTitles: Record<View, string> = {
+  dashboard: 'Dashboard',
+  graph: 'Asset Graph',
+  tools: 'AI Tool Inventory',
+  users: 'User Mapping',
+  agents: 'Internal Agents',
+  exposures: 'External Exposures',
+};
+
 const views: Record<View, React.ComponentType> = {
   dashboard: DashboardView,
   graph: GraphView,
