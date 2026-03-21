@@ -18,14 +18,7 @@ const viewTitles: Record<View, string> = {
   exposures: 'External Exposures',
 };
 
-const views: Record<View, React.ComponentType> = {
-  dashboard: DashboardView,
-  graph: GraphView,
-  tools: ToolsView,
-  users: UsersView,
-  agents: AgentsView,
-  exposures: ExposuresView,
-};
+export type { View };
 
 const Index = () => {
   const [activeView, setActiveView] = useState<View>('dashboard');
