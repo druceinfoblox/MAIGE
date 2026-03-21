@@ -8,7 +8,7 @@ type Props<K extends string> = {
   sortKey: K;
   current: SortState<K>;
   onSort: (key: K) => void;
-  align?: 'left' | 'right';
+  align?: 'left' | 'right' | 'center';
 };
 
 export function SortableHeader<K extends string>({ label, sortKey, current, onSort, align = 'left' }: Props<K>) {
