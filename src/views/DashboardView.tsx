@@ -39,6 +39,15 @@ const classificationData = [
   { name: 'Unsanctioned', value: aiTools.filter(t => t.status === 'unsanctioned').length, color: 'hsl(0, 72%, 51%)' },
 ];
 
+const newToolTimeline = [
+  { week: 'W1 Jan', tools: 2, cumulative: 2 },
+  { week: 'W3 Jan', tools: 1, cumulative: 3 },
+  { week: 'W1 Feb', tools: 2, cumulative: 5 },
+  { week: 'W3 Feb', tools: 1, cumulative: 6 },
+  { week: 'W1 Mar', tools: 3, cumulative: 9 },
+  { week: 'W2 Mar', tools: 1, cumulative: 10 },
+];
+
 const insights: { icon: typeof AlertOctagon; iconColor: string; borderColor: string; bgColor: string; text: string; navigateTo: View }[] = [
   {
     icon: AlertOctagon,
