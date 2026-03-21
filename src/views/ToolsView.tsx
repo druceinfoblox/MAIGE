@@ -107,7 +107,7 @@ export const ToolsView = () => {
                   </tr>
                 ) : (
                   filtered.map((tool) => (
-                    <tr key={tool.id} className="border-b border-border last:border-0 hover:bg-accent/30 transition-colors">
+                    <tr key={tool.id} onClick={() => setSelectedTool(tool)} className="border-b border-border last:border-0 hover:bg-accent/30 transition-colors cursor-pointer">
                       <td className="px-5 py-3.5 font-medium text-card-foreground">{tool.name}</td>
                       <td className="px-5 py-3.5 font-mono text-xs text-muted-foreground">{tool.domain}</td>
                       <td className="px-5 py-3.5 text-muted-foreground">{tool.category}</td>
