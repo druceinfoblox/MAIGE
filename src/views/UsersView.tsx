@@ -3,6 +3,7 @@ import { Search, X } from 'lucide-react';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import { StatusBadge } from '@/components/StatusBadge';
 import { SortableHeader, toggleSort, type SortState } from '@/components/SortableHeader';
+import { UserDetailPanel } from '@/components/UserDetailPanel';
 import { userActivities, type UserActivity } from '@/data/mock';
 
 const riskVariant = (r: string) => r === 'high' ? 'critical' as const : r === 'medium' ? 'warning' as const : 'success' as const;
@@ -24,6 +25,7 @@ export const UsersView = () => {
   const [riskFilter, setRiskFilter] = useState<string>('all');
   const [deptFilter, setDeptFilter] = useState<string>('all');
   const [sort, setSort] = useState<SortState<SortKey>>(null);
+  const [selectedUser, setSelectedUser] = useState<UserActivity | null>(null);
 
   const filtered = useMemo(() => {
     let data = userActivities.filter(u => {
@@ -104,7 +106,7 @@ export const UsersView = () => {
                   </tr>
                 ) : (
                   filtered.map((user) => (
-                    <tr key={user.id} className="border-b border-border last:border-0 hover:bg-accent/30 transition-colors">
+                    <tr key={user.id} onClick={() => setSelectedUser(user)} className="border-b border-border last:border-0 hover:bg-accent/30 transition-colors cursor-pointer">
                       <td className="px-5 py-3.5">
                         <div className="flex items-center gap-2.5">
                           <div className="w-7 h-7 rounded-full bg-accent flex items-center justify-center text-[11px] font-semibold text-accent-foreground">
@@ -139,6 +141,10 @@ export const UsersView = () => {
           )}
         </div>
       </ScrollReveal>
+
+      {selectedUser && (
+        <UserDetailPanel user={selectedUser} onClose={() => setSelectedUser(null)} />
+      )}
     </div>
   );
 };
