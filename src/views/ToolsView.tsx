@@ -3,6 +3,7 @@ import { Search, X } from 'lucide-react';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import { StatusBadge } from '@/components/StatusBadge';
 import { SortableHeader, toggleSort, type SortState } from '@/components/SortableHeader';
+import { ToolDetailPanel } from '@/components/ToolDetailPanel';
 import { aiTools, type AITool } from '@/data/mock';
 
 const statusOptions = ['all', 'approved', 'unknown', 'unsanctioned'] as const;
@@ -23,6 +24,7 @@ export const ToolsView = () => {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [sort, setSort] = useState<SortState<SortKey>>(null);
+  const [selectedTool, setSelectedTool] = useState<AITool | null>(null);
 
   const filtered = useMemo(() => {
     let data = aiTools.filter(t => {
@@ -105,7 +107,7 @@ export const ToolsView = () => {
                   </tr>
                 ) : (
                   filtered.map((tool) => (
-                    <tr key={tool.id} className="border-b border-border last:border-0 hover:bg-accent/30 transition-colors">
+                    <tr key={tool.id} onClick={() => setSelectedTool(tool)} className="border-b border-border last:border-0 hover:bg-accent/30 transition-colors cursor-pointer">
                       <td className="px-5 py-3.5 font-medium text-card-foreground">{tool.name}</td>
                       <td className="px-5 py-3.5 font-mono text-xs text-muted-foreground">{tool.domain}</td>
                       <td className="px-5 py-3.5 text-muted-foreground">{tool.category}</td>
@@ -129,6 +131,10 @@ export const ToolsView = () => {
           )}
         </div>
       </ScrollReveal>
+
+      {selectedTool && (
+        <ToolDetailPanel tool={selectedTool} onClose={() => setSelectedTool(null)} />
+      )}
     </div>
   );
 };
