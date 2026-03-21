@@ -28,7 +28,19 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <AppSidebar activeView={activeView} onNavigate={setActiveView} />
       <main className="ml-64 p-8">
-        <ActiveComponent />
+        {activeView === 'dashboard' ? (
+          <DashboardView onNavigate={setActiveView} />
+        ) : activeView === 'graph' ? (
+          <GraphView />
+        ) : activeView === 'tools' ? (
+          <ToolsView />
+        ) : activeView === 'users' ? (
+          <UsersView />
+        ) : activeView === 'agents' ? (
+          <AgentsView />
+        ) : (
+          <ExposuresView />
+        )}
       </main>
     </div>
   );
