@@ -1,7 +1,7 @@
-import { LayoutDashboard, Radar, Users, Server, Globe } from 'lucide-react';
+import { LayoutDashboard, Radar, Users, Server, Globe, GitBranch } from 'lucide-react';
 import InfobloxLogo from './InfobloxLogo';
 
-type View = 'dashboard' | 'tools' | 'users' | 'agents' | 'exposures';
+type View = 'dashboard' | 'tools' | 'users' | 'agents' | 'exposures' | 'graph';
 
 type Props = {
   activeView: View;
