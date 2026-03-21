@@ -10,6 +10,7 @@ type Props = {
 
 const navItems: { id: View; label: string; icon: typeof LayoutDashboard }[] = [
   { id: 'dashboard', label: 'Overview', icon: LayoutDashboard },
+  { id: 'graph', label: 'Asset Graph', icon: GitBranch },
   { id: 'tools', label: 'AI Tools', icon: Radar },
   { id: 'users', label: 'Users', icon: Users },
   { id: 'agents', label: 'Internal Agents', icon: Server },
