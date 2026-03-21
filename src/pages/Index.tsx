@@ -22,7 +22,6 @@ export type { View };
 
 const Index = () => {
   const [activeView, setActiveView] = useState<View>('dashboard');
-  const ActiveComponent = views[activeView];
 
   return (
     <div className="min-h-screen bg-background">

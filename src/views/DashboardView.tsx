@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Radar, Users, Server, Globe, AlertTriangle, Info, AlertOctagon } from 'lucide-react';
+import { Radar, Users, Server, Globe, AlertTriangle, Info, AlertOctagon, ChevronRight } from 'lucide-react';
+import type { View } from '@/pages/Index';
 import { MetricCard } from '@/components/MetricCard';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import { summaryMetrics, aiTools } from '@/data/mock';
