@@ -5,11 +5,13 @@ import { ToolsView } from '@/views/ToolsView';
 import { UsersView } from '@/views/UsersView';
 import { AgentsView } from '@/views/AgentsView';
 import { ExposuresView } from '@/views/ExposuresView';
+import { GraphView } from '@/views/GraphView';
 
-type View = 'dashboard' | 'tools' | 'users' | 'agents' | 'exposures';
+type View = 'dashboard' | 'tools' | 'users' | 'agents' | 'exposures' | 'graph';
 
 const views: Record<View, React.ComponentType> = {
   dashboard: DashboardView,
+  graph: GraphView,
   tools: ToolsView,
   users: UsersView,
   agents: AgentsView,

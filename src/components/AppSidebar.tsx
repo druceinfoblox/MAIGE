@@ -1,7 +1,7 @@
-import { LayoutDashboard, Radar, Users, Server, Globe } from 'lucide-react';
+import { LayoutDashboard, Radar, Users, Server, Globe, GitBranch } from 'lucide-react';
 import InfobloxLogo from './InfobloxLogo';
 
-type View = 'dashboard' | 'tools' | 'users' | 'agents' | 'exposures';
+type View = 'dashboard' | 'tools' | 'users' | 'agents' | 'exposures' | 'graph';
 
 type Props = {
   activeView: View;
@@ -10,6 +10,7 @@ type Props = {
 
 const navItems: { id: View; label: string; icon: typeof LayoutDashboard }[] = [
   { id: 'dashboard', label: 'Overview', icon: LayoutDashboard },
+  { id: 'graph', label: 'Asset Graph', icon: GitBranch },
   { id: 'tools', label: 'AI Tools', icon: Radar },
   { id: 'users', label: 'Users', icon: Users },
   { id: 'agents', label: 'Internal Agents', icon: Server },
