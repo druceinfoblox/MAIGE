@@ -16,15 +16,15 @@ const navItems: { id: View; label: string; icon: typeof LayoutDashboard }[] = [
 ];
 
 const InfobloxLogo = () => (
-  <svg viewBox="0 0 140 24" className="h-5 w-auto" aria-label="Infoblox">
+  <svg viewBox="0 0 140 20" className="h-[18px] w-auto" aria-label="Infoblox">
     <text
       x="0"
-      y="19"
-      fontFamily="'DM Sans', system-ui, sans-serif"
-      fontSize="22"
+      y="16"
+      fontFamily="'Lato', system-ui, sans-serif"
+      fontSize="20"
       fontWeight="700"
-      letterSpacing="-0.5"
-      fill="hsl(172, 100%, 39%)"
+      letterSpacing="-0.3"
+      fill="#FFFFFF"
     >
       infoblox
     </text>
@@ -39,7 +39,7 @@ export const AppSidebar = ({ activeView, onNavigate }: Props) => {
       </div>
 
       <div className="px-5 pt-5 pb-2">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-sidebar-muted">AI Visibility</p>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-sidebar-muted font-heading">AI Visibility</p>
       </div>
 
       <nav className="flex-1 px-3 py-1 space-y-0.5">

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,300;0,6..12,400;0,6..12,500;0,6..12,600;0,6..12,700;0,6..12,800;1,6..12,400&family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,28 +6,29 @@
 
 @layer base {
   :root {
-    /* Infoblox light surface */
-    --background: 210 20% 96%;
-    --foreground: 210 29% 13%;
+    /* Infoblox light surfaces */
+    --background: 200 20% 96%;
+    --foreground: 195 33% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 210 29% 13%;
+    --card-foreground: 195 33% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 210 29% 13%;
+    --popover-foreground: 195 33% 10%;
 
-    /* Infoblox cyan/teal */
-    --primary: 172 100% 39%;
-    --primary-foreground: 210 29% 13%;
+    /* Infoblox green #00BD4D → hsl(144, 100%, 37%) */
+    --primary: 144 100% 37%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 18% 91%;
-    --secondary-foreground: 210 29% 13%;
+    --secondary: 200 16% 91%;
+    --secondary-foreground: 195 33% 10%;
 
-    --muted: 210 18% 91%;
-    --muted-foreground: 210 10% 46%;
+    --muted: 200 16% 91%;
+    --muted-foreground: 200 10% 44%;
 
-    --accent: 210 18% 94%;
-    --accent-foreground: 210 29% 13%;
+    /* Infoblox light green tint #CCFFE1 */
+    --accent: 147 100% 90%;
+    --accent-foreground: 195 33% 10%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
@@ -35,29 +36,31 @@
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
 
-    --success: 160 84% 39%;
+    --success: 144 100% 37%;
     --success-foreground: 0 0% 100%;
 
-    --border: 210 18% 87%;
-    --input: 210 18% 87%;
-    --ring: 172 100% 39%;
+    --border: 200 16% 87%;
+    --input: 200 16% 87%;
+    --ring: 144 100% 37%;
 
     --radius: 0.625rem;
 
-    /* Infoblox dark sidebar */
-    --sidebar-background: 210 29% 13%;
-    --sidebar-foreground: 210 15% 70%;
-    --sidebar-primary: 172 100% 39%;
+    /* Infoblox dark navy #101820 → hsl(207, 33%, 9%) */
+    --sidebar-background: 207 33% 9%;
+    --sidebar-foreground: 200 12% 65%;
+    --sidebar-primary: 144 100% 37%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 25% 18%;
-    --sidebar-accent-foreground: 210 15% 90%;
-    --sidebar-border: 210 22% 20%;
-    --sidebar-ring: 172 100% 39%;
-    --sidebar-muted: 210 10% 50%;
+    --sidebar-accent: 207 28% 15%;
+    --sidebar-accent-foreground: 200 12% 90%;
+    --sidebar-border: 207 24% 18%;
+    --sidebar-ring: 144 100% 37%;
+    --sidebar-muted: 200 8% 48%;
 
     /* custom tokens */
     --surface-raised: 0 0% 100%;
-    --surface-sunken: 210 20% 93%;
+    --surface-sunken: 200 20% 93%;
+    --infoblox-green-light: 147 100% 90%;
+    --infoblox-green-mid: 147 100% 80%;
   }
 }
 
@@ -68,11 +71,12 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: 'Nunito Sans', system-ui, sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
     @apply tracking-tight;
+    font-family: 'Lato', system-ui, sans-serif;
     text-wrap: balance;
   }
 
@@ -85,6 +89,10 @@
 @layer utilities {
   .font-mono {
     font-family: 'JetBrains Mono', monospace;
+  }
+
+  .font-heading {
+    font-family: 'Lato', system-ui, sans-serif;
   }
 
   .metric-text {
