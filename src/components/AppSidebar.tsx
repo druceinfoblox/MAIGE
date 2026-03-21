@@ -17,7 +17,7 @@ const navSections: NavSection[] = [
   {
     label: 'Overview',
     items: [
-      { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, dotColor: 'bg-primary' },
+      { id: 'dashboard', label: 'Findings', icon: LayoutDashboard, dotColor: 'bg-primary' },
     ],
   },
   {

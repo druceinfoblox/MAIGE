@@ -10,7 +10,7 @@ import { GraphView } from '@/views/GraphView';
 type View = 'dashboard' | 'tools' | 'users' | 'agents' | 'exposures' | 'graph';
 
 const viewTitles: Record<View, string> = {
-  dashboard: 'Dashboard',
+  dashboard: 'Findings',
   graph: 'Asset Graph',
   tools: 'AI Tool Inventory',
   users: 'User Mapping',
