@@ -2,26 +2,46 @@ import { useState, useMemo } from 'react';
 import { Search, X } from 'lucide-react';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import { StatusBadge } from '@/components/StatusBadge';
-import { aiTools } from '@/data/mock';
+import { SortableHeader, toggleSort, type SortState } from '@/components/SortableHeader';
+import { aiTools, type AITool } from '@/data/mock';
 
 const statusOptions = ['all', 'approved', 'unknown', 'unsanctioned'] as const;
 const categoryOptions = ['all', ...Array.from(new Set(aiTools.map(t => t.category)))] as const;
+
+type SortKey = 'name' | 'domain' | 'category' | 'status' | 'users' | 'requests' | 'firstSeen' | 'lastSeen';
+
+const compareFn = (a: AITool, b: AITool, key: SortKey): number => {
+  switch (key) {
+    case 'users': return a.users - b.users;
+    case 'requests': return a.requests - b.requests;
+    default: return String(a[key]).localeCompare(String(b[key]));
+  }
+};
 
 export const ToolsView = () => {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [sort, setSort] = useState<SortState<SortKey>>(null);
 
   const filtered = useMemo(() => {
-    return aiTools.filter(t => {
+    let data = aiTools.filter(t => {
       const matchesSearch = !search || t.name.toLowerCase().includes(search.toLowerCase()) || t.domain.toLowerCase().includes(search.toLowerCase());
       const matchesStatus = statusFilter === 'all' || t.status === statusFilter;
       const matchesCategory = categoryFilter === 'all' || t.category === categoryFilter;
       return matchesSearch && matchesStatus && matchesCategory;
     });
-  }, [search, statusFilter, categoryFilter]);
+    if (sort) {
+      data = [...data].sort((a, b) => {
+        const c = compareFn(a, b, sort.key);
+        return sort.dir === 'asc' ? c : -c;
+      });
+    }
+    return data;
+  }, [search, statusFilter, categoryFilter, sort]);
 
   const hasFilters = search || statusFilter !== 'all' || categoryFilter !== 'all';
+  const handleSort = (key: SortKey) => setSort(prev => toggleSort(prev, key));
 
   return (
     <div className="space-y-6">
@@ -30,7 +50,6 @@ export const ToolsView = () => {
         <p className="text-sm text-muted-foreground mt-1">All AI tools detected via DNS log analysis</p>
       </div>
 
-      {/* Search & Filters */}
       <ScrollReveal>
         <div className="flex flex-wrap items-center gap-3">
           <div className="relative flex-1 min-w-[220px] max-w-sm">
@@ -43,29 +62,18 @@ export const ToolsView = () => {
               className="w-full pl-9 pr-3 py-2 rounded-lg bg-card border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring transition-shadow"
             />
           </div>
-          <select
-            value={statusFilter}
-            onChange={e => setStatusFilter(e.target.value)}
-            className="px-3 py-2 rounded-lg bg-card border border-border text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring cursor-pointer"
-          >
+          <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className="px-3 py-2 rounded-lg bg-card border border-border text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring cursor-pointer">
             {statusOptions.map(s => (
               <option key={s} value={s}>{s === 'all' ? 'All statuses' : s.charAt(0).toUpperCase() + s.slice(1)}</option>
             ))}
           </select>
-          <select
-            value={categoryFilter}
-            onChange={e => setCategoryFilter(e.target.value)}
-            className="px-3 py-2 rounded-lg bg-card border border-border text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring cursor-pointer"
-          >
+          <select value={categoryFilter} onChange={e => setCategoryFilter(e.target.value)} className="px-3 py-2 rounded-lg bg-card border border-border text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring cursor-pointer">
             {categoryOptions.map(c => (
               <option key={c} value={c}>{c === 'all' ? 'All categories' : c}</option>
             ))}
           </select>
           {hasFilters && (
-            <button
-              onClick={() => { setSearch(''); setStatusFilter('all'); setCategoryFilter('all'); }}
-              className="flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
+            <button onClick={() => { setSearch(''); setStatusFilter('all'); setCategoryFilter('all'); }} className="flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground transition-colors">
               <X size={14} /> Clear
             </button>
           )}
@@ -78,14 +86,14 @@ export const ToolsView = () => {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border bg-accent/50">
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Tool</th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Domain</th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Category</th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Status</th>
-                  <th className="text-right px-5 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Users</th>
-                  <th className="text-right px-5 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Requests</th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">First Seen</th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Last Seen</th>
+                  <SortableHeader label="Tool" sortKey="name" current={sort} onSort={handleSort} />
+                  <SortableHeader label="Domain" sortKey="domain" current={sort} onSort={handleSort} />
+                  <SortableHeader label="Category" sortKey="category" current={sort} onSort={handleSort} />
+                  <SortableHeader label="Status" sortKey="status" current={sort} onSort={handleSort} />
+                  <SortableHeader label="Users" sortKey="users" current={sort} onSort={handleSort} align="right" />
+                  <SortableHeader label="Requests" sortKey="requests" current={sort} onSort={handleSort} align="right" />
+                  <SortableHeader label="First Seen" sortKey="firstSeen" current={sort} onSort={handleSort} />
+                  <SortableHeader label="Last Seen" sortKey="lastSeen" current={sort} onSort={handleSort} />
                 </tr>
               </thead>
               <tbody>
