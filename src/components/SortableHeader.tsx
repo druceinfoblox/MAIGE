@@ -8,7 +8,7 @@ type Props<K extends string> = {
   sortKey: K;
   current: SortState<K>;
   onSort: (key: K) => void;
-  align?: 'left' | 'right';
+  align?: 'left' | 'right' | 'center';
 };
 
 export function SortableHeader<K extends string>({ label, sortKey, current, onSort, align = 'left' }: Props<K>) {
@@ -18,7 +18,7 @@ export function SortableHeader<K extends string>({ label, sortKey, current, onSo
   return (
     <th
       onClick={() => onSort(sortKey)}
-      className={`${align === 'right' ? 'text-right' : 'text-left'} px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer select-none transition-colors hover:text-foreground ${active ? 'text-foreground' : 'text-muted-foreground'}`}
+      className={`${align === 'right' ? 'text-right' : align === 'center' ? 'text-center' : 'text-left'} px-5 py-3 text-xs font-semibold uppercase tracking-wider cursor-pointer select-none transition-colors hover:text-foreground ${active ? 'text-foreground' : 'text-muted-foreground'}`}
     >
       <span className="inline-flex items-center gap-1">
         {label}

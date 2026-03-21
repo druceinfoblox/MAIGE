@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Radar, Users, Server, Globe, AlertTriangle, Info, AlertOctagon, ChevronRight } from 'lucide-react';
+import { Radar, Users, Server, Globe, AlertTriangle, Info, AlertOctagon, ChevronRight, TrendingUp } from 'lucide-react';
 import type { View } from '@/pages/Index';
 import { MetricCard } from '@/components/MetricCard';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import { summaryMetrics, aiTools } from '@/data/mock';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell, PieChart, Pie } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell, PieChart, Pie, LineChart, Line } from 'recharts';
 
 const timeRanges = ['Last 7d', '30d', '90d', 'All'];
 
@@ -37,6 +37,15 @@ const classificationData = [
   { name: 'Approved', value: aiTools.filter(t => t.status === 'approved').length, color: 'hsl(144, 100%, 37%)' },
   { name: 'Unknown', value: aiTools.filter(t => t.status === 'unknown').length, color: 'hsl(200, 80%, 55%)' },
   { name: 'Unsanctioned', value: aiTools.filter(t => t.status === 'unsanctioned').length, color: 'hsl(0, 72%, 51%)' },
+];
+
+const newToolTimeline = [
+  { week: 'W1 Jan', tools: 2, cumulative: 2 },
+  { week: 'W3 Jan', tools: 1, cumulative: 3 },
+  { week: 'W1 Feb', tools: 2, cumulative: 5 },
+  { week: 'W3 Feb', tools: 1, cumulative: 6 },
+  { week: 'W1 Mar', tools: 3, cumulative: 9 },
+  { week: 'W2 Mar', tools: 1, cumulative: 10 },
 ];
 
 const insights: { icon: typeof AlertOctagon; iconColor: string; borderColor: string; bgColor: string; text: string; navigateTo: View }[] = [
@@ -235,6 +244,77 @@ export const DashboardView = ({ onNavigate }: { onNavigate: (view: View) => void
                   <span className="text-[10px] text-muted-foreground">{d.name} ({d.value})</span>
                 </div>
               ))}
+            </div>
+          </div>
+        </ScrollReveal>
+      </div>
+
+      {/* Usage Trends — new tool detection */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+        <ScrollReveal delay={0.16}>
+          <div className="bg-card rounded-xl border border-border shadow-card p-5">
+            <h3 className="text-sm font-semibold text-card-foreground mb-1 flex items-center gap-2">
+              <TrendingUp size={14} className="text-primary" />
+              New Tool Detection
+            </h3>
+            <p className="text-xs text-muted-foreground mb-4">AI tools discovered over time via DNS analysis</p>
+            <div className="h-56">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={newToolTimeline} margin={{ left: 0, right: 8, top: 0, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(210, 20%, 20%)" />
+                  <XAxis dataKey="week" tick={{ fontSize: 10, fill: 'hsl(210, 12%, 55%)' }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 11, fill: 'hsl(210, 12%, 55%)' }} axisLine={false} tickLine={false} allowDecimals={false} />
+                  <Tooltip
+                    contentStyle={{ background: 'hsl(210, 32%, 14%)', border: '1px solid hsl(210, 20%, 20%)', borderRadius: '8px', fontSize: '12px', color: 'hsl(210, 20%, 90%)' }}
+                    formatter={(value: number, name: string) => [value, name === 'tools' ? 'New Tools' : 'Cumulative']}
+                  />
+                  <Bar dataKey="tools" fill="hsl(144, 100%, 37%)" radius={[4, 4, 0, 0]} barSize={24} name="tools" />
+                  <Line type="monotone" dataKey="cumulative" stroke="hsl(200, 80%, 55%)" strokeWidth={2} dot={{ r: 3, fill: 'hsl(200, 80%, 55%)' }} name="cumulative" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="flex items-center gap-4 mt-3 pt-3 border-t border-border">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: 'hsl(144, 100%, 37%)' }} />
+                <span className="text-[10px] text-muted-foreground">New this period</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: 'hsl(200, 80%, 55%)' }} />
+                <span className="text-[10px] text-muted-foreground">Cumulative total</span>
+              </div>
+            </div>
+          </div>
+        </ScrollReveal>
+
+        <ScrollReveal delay={0.2}>
+          <div className="bg-card rounded-xl border border-border shadow-card p-5">
+            <h3 className="text-sm font-semibold text-card-foreground mb-1 flex items-center gap-2">
+              <Radar size={14} className="text-primary" />
+              Recently Discovered Tools
+            </h3>
+            <p className="text-xs text-muted-foreground mb-4">Latest AI services detected in DNS logs</p>
+            <div className="space-y-0">
+              {aiTools
+                .sort((a, b) => b.firstSeen.localeCompare(a.firstSeen))
+                .slice(0, 6)
+                .map(tool => (
+                  <div key={tool.id} className="flex items-center justify-between py-2.5 border-b border-border/50 last:border-0">
+                    <div>
+                      <p className="text-sm text-card-foreground font-medium">{tool.name}</p>
+                      <p className="text-[10px] text-muted-foreground font-mono">{tool.domain}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] text-muted-foreground">{tool.firstSeen}</span>
+                      <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium ${
+                        tool.status === 'approved' ? 'bg-success/15 text-success' :
+                        tool.status === 'unsanctioned' ? 'bg-destructive/15 text-destructive' :
+                        'bg-warning/15 text-warning'
+                      }`}>
+                        {tool.status}
+                      </span>
+                    </div>
+                  </div>
+                ))}
             </div>
           </div>
         </ScrollReveal>
