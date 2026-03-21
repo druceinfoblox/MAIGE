@@ -131,6 +131,10 @@ export const ToolsView = () => {
           )}
         </div>
       </ScrollReveal>
+
+      {selectedTool && (
+        <ToolDetailPanel tool={selectedTool} onClose={() => setSelectedTool(null)} />
+      )}
     </div>
   );
 };
