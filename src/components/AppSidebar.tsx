@@ -1,4 +1,5 @@
 import { LayoutDashboard, Radar, Users, Server, Globe } from 'lucide-react';
+import InfobloxLogo from './InfobloxLogo';
 
 type View = 'dashboard' | 'tools' | 'users' | 'agents' | 'exposures';
 
@@ -15,27 +16,11 @@ const navItems: { id: View; label: string; icon: typeof LayoutDashboard }[] = [
   { id: 'exposures', label: 'Exposures', icon: Globe },
 ];
 
-const InfobloxLogo = () => (
-  <svg viewBox="0 0 140 20" className="h-[18px] w-auto" aria-label="Infoblox">
-    <text
-      x="0"
-      y="16"
-      fontFamily="'Lato', system-ui, sans-serif"
-      fontSize="20"
-      fontWeight="700"
-      letterSpacing="-0.3"
-      fill="#FFFFFF"
-    >
-      infoblox
-    </text>
-  </svg>
-);
-
 export const AppSidebar = ({ activeView, onNavigate }: Props) => {
   return (
     <aside className="fixed left-0 top-0 bottom-0 w-64 bg-sidebar flex flex-col z-50">
-      <div className="flex items-center gap-3 px-6 py-5 border-b border-sidebar-border">
-        <InfobloxLogo />
+      <div className="flex items-center px-6 py-5 border-b border-sidebar-border">
+        <InfobloxLogo className="h-5 w-auto text-white" />
       </div>
 
       <div className="px-5 pt-5 pb-2">
