@@ -6,29 +6,29 @@
 
 @layer base {
   :root {
-    /* Infoblox light surfaces */
-    --background: 200 20% 96%;
-    --foreground: 195 33% 10%;
+    /* Dark navy theme matching reference */
+    --background: 210 36% 10%;
+    --foreground: 210 20% 90%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 195 33% 10%;
+    --card: 210 32% 14%;
+    --card-foreground: 210 20% 90%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 195 33% 10%;
+    --popover: 210 32% 14%;
+    --popover-foreground: 210 20% 90%;
 
     /* Infoblox green #00BD4D → hsl(144, 100%, 37%) */
     --primary: 144 100% 37%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 200 16% 91%;
-    --secondary-foreground: 195 33% 10%;
+    --secondary: 210 24% 20%;
+    --secondary-foreground: 210 20% 85%;
 
-    --muted: 200 16% 91%;
-    --muted-foreground: 200 10% 44%;
+    --muted: 210 24% 20%;
+    --muted-foreground: 210 12% 55%;
 
-    /* Infoblox light green tint #CCFFE1 */
-    --accent: 147 100% 90%;
-    --accent-foreground: 195 33% 10%;
+    /* Infoblox light green tint */
+    --accent: 210 28% 18%;
+    --accent-foreground: 210 20% 85%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
@@ -39,26 +39,29 @@
     --success: 144 100% 37%;
     --success-foreground: 0 0% 100%;
 
-    --border: 200 16% 87%;
-    --input: 200 16% 87%;
+    --info: 200 80% 55%;
+    --info-foreground: 0 0% 100%;
+
+    --border: 210 20% 20%;
+    --input: 210 20% 20%;
     --ring: 144 100% 37%;
 
     --radius: 0.625rem;
 
-    /* Infoblox dark navy #101820 → hsl(207, 33%, 9%) */
-    --sidebar-background: 207 33% 9%;
-    --sidebar-foreground: 200 12% 65%;
+    /* Sidebar — deeper navy */
+    --sidebar-background: 210 40% 7%;
+    --sidebar-foreground: 210 12% 60%;
     --sidebar-primary: 144 100% 37%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 207 28% 15%;
-    --sidebar-accent-foreground: 200 12% 90%;
-    --sidebar-border: 207 24% 18%;
+    --sidebar-accent: 210 36% 14%;
+    --sidebar-accent-foreground: 210 20% 90%;
+    --sidebar-border: 210 24% 15%;
     --sidebar-ring: 144 100% 37%;
-    --sidebar-muted: 200 8% 48%;
+    --sidebar-muted: 210 10% 45%;
 
     /* custom tokens */
-    --surface-raised: 0 0% 100%;
-    --surface-sunken: 200 20% 93%;
+    --surface-raised: 210 32% 16%;
+    --surface-sunken: 210 36% 9%;
     --infoblox-green-light: 147 100% 90%;
     --infoblox-green-mid: 147 100% 80%;
   }

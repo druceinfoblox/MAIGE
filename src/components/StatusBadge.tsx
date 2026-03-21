@@ -4,10 +4,10 @@ type Props = {
 };
 
 const styles = {
-  success: 'bg-success/10 text-success',
-  warning: 'bg-warning/10 text-warning',
-  critical: 'bg-destructive/10 text-destructive',
-  neutral: 'bg-muted text-muted-foreground',
+  success: 'bg-success/15 text-success',
+  warning: 'bg-warning/15 text-warning',
+  critical: 'bg-destructive/15 text-destructive',
+  neutral: 'bg-muted/50 text-muted-foreground',
 };
 
 export const StatusBadge = ({ status, variant = 'neutral' }: Props) => (
