@@ -94,7 +94,7 @@ export const DashboardView = () => {
                     contentStyle={{ background: 'hsl(0, 0%, 100%)', border: '1px solid hsl(220, 13%, 88%)', borderRadius: '8px', fontSize: '12px' }}
                     formatter={(value: number) => [value.toLocaleString(), 'Requests']}
                   />
-                  <Area type="monotone" dataKey="requests" stroke="hsl(173, 58%, 39%)" strokeWidth={2} fill="url(#areaGradient)" />
+                  <Area type="monotone" dataKey="requests" stroke="hsl(172, 100%, 39%)" strokeWidth={2} fill="url(#areaGradient)" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
