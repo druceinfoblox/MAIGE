@@ -82,7 +82,7 @@ export const DashboardView = ({ onNavigate }: { onNavigate: (view: View) => void
       {/* Header with time range */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-semibold text-foreground">Dashboard</h2>
+          <h2 className="text-2xl font-semibold text-foreground">Findings</h2>
           <p className="text-sm text-muted-foreground mt-0.5">AI footprint across your environment</p>
         </div>
         <div className="flex items-center gap-1.5">
