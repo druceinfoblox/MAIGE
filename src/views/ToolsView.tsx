@@ -3,6 +3,7 @@ import { Search, X } from 'lucide-react';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import { StatusBadge } from '@/components/StatusBadge';
 import { SortableHeader, toggleSort, type SortState } from '@/components/SortableHeader';
+import { ToolDetailPanel } from '@/components/ToolDetailPanel';
 import { aiTools, type AITool } from '@/data/mock';
 
 const statusOptions = ['all', 'approved', 'unknown', 'unsanctioned'] as const;
