@@ -248,21 +248,46 @@ export const GraphView = () => {
                   const isHighlighted = hoveredNode && connectedEdges.includes(edge);
                   const isDimmed = hoveredNode && !isHighlighted;
                   const color = getEdgeColor(edge);
+                  const isAgentEdge = edge.type === 'agent-to-agent';
 
-                  // Cubic bezier for smooth horizontal curves
-                  const dx = (to.x - from.x) * 0.45;
-                  const path = `M ${from.x} ${from.y} C ${from.x + dx} ${from.y}, ${to.x - dx} ${to.y}, ${to.x} ${to.y}`;
+                  let path: string;
+                  if (isAgentEdge) {
+                    // Arc curve for same-column agent-to-agent links
+                    const midY = (from.y + to.y) / 2;
+                    const dist = Math.abs(to.y - from.y);
+                    const arcX = from.x + Math.max(60, dist * 0.4);
+                    path = `M ${from.x} ${from.y} C ${arcX} ${from.y}, ${arcX} ${to.y}, ${to.x} ${to.y}`;
+                  } else {
+                    const dx = (to.x - from.x) * 0.45;
+                    path = `M ${from.x} ${from.y} C ${from.x + dx} ${from.y}, ${to.x - dx} ${to.y}, ${to.x} ${to.y}`;
+                  }
 
                   return (
-                    <path
-                      key={i}
-                      d={path}
-                      fill="none"
-                      stroke={isHighlighted ? color : isDimmed ? 'hsl(200, 10%, 85%)' : color}
-                      strokeWidth={isHighlighted ? 2.5 : 1.2}
-                      strokeOpacity={isDimmed ? 0.15 : isHighlighted ? 0.9 : 0.3}
-                      className="transition-all duration-300"
-                    />
+                    <g key={i}>
+                      <path
+                        d={path}
+                        fill="none"
+                        stroke={isHighlighted ? color : isDimmed ? 'hsl(200, 10%, 85%)' : color}
+                        strokeWidth={isHighlighted ? 2.5 : isAgentEdge ? 1.8 : 1.2}
+                        strokeOpacity={isDimmed ? 0.15 : isHighlighted ? 0.9 : isAgentEdge ? 0.5 : 0.3}
+                        strokeDasharray={isAgentEdge ? '6 3' : undefined}
+                        className="transition-all duration-300"
+                      />
+                      {/* Protocol label on agent-to-agent edges */}
+                      {isAgentEdge && !isDimmed && (
+                        <text
+                          x={from.x + Math.max(60, Math.abs(to.y - from.y) * 0.4) + 4}
+                          y={(from.y + to.y) / 2}
+                          fill={color}
+                          fontSize="8"
+                          fontFamily="var(--font-mono, monospace)"
+                          opacity={isHighlighted ? 1 : 0.6}
+                          dominantBaseline="middle"
+                        >
+                          {edge.protocol}
+                        </text>
+                      )}
+                    </g>
                   );
                 })}
               </svg>
