@@ -198,8 +198,10 @@ export const GraphView = () => {
     });
   }
 
+  const MCP_COLOR = 'hsl(270, 70%, 60%)';
+
   const getEdgeColor = (edge: GraphEdge) => {
-    // Color based on source column
+    if (edge.type === 'agent-to-agent') return MCP_COLOR;
     const fromNode = allNodes.find(n => n.id === edge.from);
     if (!fromNode) return 'hsl(200, 16%, 70%)';
     const col = columnConfig.find(c => c.key === fromNode.column);
