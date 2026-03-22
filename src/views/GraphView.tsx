@@ -347,7 +347,7 @@ export const GraphView = () => {
               </div>
             ))}
             <div className="flex items-center gap-1.5">
-              <span className="w-3 h-[2px] rounded" style={{ backgroundColor: MCP_COLOR, borderStyle: 'dashed' }} />
+              <svg width="12" height="2"><line x1="0" y1="1" x2="12" y2="1" stroke="hsl(270, 70%, 60%)" strokeWidth="2" strokeDasharray="3 2" /></svg>
               <span className="text-[10px] text-muted-foreground">MCP agent-to-agent</span>
             </div>
             <div className="flex items-center gap-1.5">
