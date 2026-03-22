@@ -28,6 +28,21 @@ const agentToExposure: Record<string, string[]> = {
   'rag-service.internal.company.com': ['mcp.company.com'],
 };
 
+// Agent → Agent MCP interactions (internal service-to-service communication)
+const agentToAgent: Record<string, { target: string; protocol: string }[]> = {
+  'agent-orchestrator.k8s.company.com': [
+    { target: 'llm-gateway.corp.company.com', protocol: 'MCP/gRPC' },
+    { target: 'rag-service.internal.company.com', protocol: 'MCP/HTTP' },
+  ],
+  'mcp.internal.company.com': [
+    { target: 'embeddings.ml.company.com', protocol: 'MCP/gRPC' },
+    { target: 'agent-orchestrator.k8s.company.com', protocol: 'MCP/HTTP' },
+  ],
+  'rag-service.internal.company.com': [
+    { target: 'embeddings.ml.company.com', protocol: 'MCP/HTTP' },
+  ],
+};
+
 type NodeId = string;
 type Column = 'users' | 'tools' | 'agents' | 'exposures';
 
@@ -43,6 +58,8 @@ interface GraphNode {
 interface GraphEdge {
   from: NodeId;
   to: NodeId;
+  type?: 'default' | 'agent-to-agent';
+  protocol?: string;
 }
 
 // Build nodes
@@ -110,6 +127,15 @@ internalAgents.forEach(a => {
   });
 });
 
+// Agent → Agent MCP edges (self-referencing within agents column)
+internalAgents.forEach(a => {
+  const targets = agentToAgent[a.hostname] || [];
+  targets.forEach(({ target, protocol }) => {
+    const targetAgent = internalAgents.find(ag => ag.hostname === target);
+    if (targetAgent) edges.push({ from: `agent-${a.id}`, to: `agent-${targetAgent.id}`, type: 'agent-to-agent', protocol });
+  });
+});
+
 const allNodes = [...userNodes, ...toolNodes, ...agentNodes, ...exposureNodes];
 
 const columnConfig: { key: Column; label: string; icon: typeof Users; color: string }[] = [
@@ -172,8 +198,10 @@ export const GraphView = () => {
     });
   }
 
+  const MCP_COLOR = 'hsl(270, 70%, 60%)';
+
   const getEdgeColor = (edge: GraphEdge) => {
-    // Color based on source column
+    if (edge.type === 'agent-to-agent') return MCP_COLOR;
     const fromNode = allNodes.find(n => n.id === edge.from);
     if (!fromNode) return 'hsl(200, 16%, 70%)';
     const col = columnConfig.find(c => c.key === fromNode.column);
@@ -222,21 +250,46 @@ export const GraphView = () => {
                   const isHighlighted = hoveredNode && connectedEdges.includes(edge);
                   const isDimmed = hoveredNode && !isHighlighted;
                   const color = getEdgeColor(edge);
+                  const isAgentEdge = edge.type === 'agent-to-agent';
 
-                  // Cubic bezier for smooth horizontal curves
-                  const dx = (to.x - from.x) * 0.45;
-                  const path = `M ${from.x} ${from.y} C ${from.x + dx} ${from.y}, ${to.x - dx} ${to.y}, ${to.x} ${to.y}`;
+                  let path: string;
+                  if (isAgentEdge) {
+                    // Arc curve for same-column agent-to-agent links
+                    const midY = (from.y + to.y) / 2;
+                    const dist = Math.abs(to.y - from.y);
+                    const arcX = from.x + Math.max(60, dist * 0.4);
+                    path = `M ${from.x} ${from.y} C ${arcX} ${from.y}, ${arcX} ${to.y}, ${to.x} ${to.y}`;
+                  } else {
+                    const dx = (to.x - from.x) * 0.45;
+                    path = `M ${from.x} ${from.y} C ${from.x + dx} ${from.y}, ${to.x - dx} ${to.y}, ${to.x} ${to.y}`;
+                  }
 
                   return (
-                    <path
-                      key={i}
-                      d={path}
-                      fill="none"
-                      stroke={isHighlighted ? color : isDimmed ? 'hsl(200, 10%, 85%)' : color}
-                      strokeWidth={isHighlighted ? 2.5 : 1.2}
-                      strokeOpacity={isDimmed ? 0.15 : isHighlighted ? 0.9 : 0.3}
-                      className="transition-all duration-300"
-                    />
+                    <g key={i}>
+                      <path
+                        d={path}
+                        fill="none"
+                        stroke={isHighlighted ? color : isDimmed ? 'hsl(200, 10%, 85%)' : color}
+                        strokeWidth={isHighlighted ? 2.5 : isAgentEdge ? 1.8 : 1.2}
+                        strokeOpacity={isDimmed ? 0.15 : isHighlighted ? 0.9 : isAgentEdge ? 0.5 : 0.3}
+                        strokeDasharray={isAgentEdge ? '6 3' : undefined}
+                        className="transition-all duration-300"
+                      />
+                      {/* Protocol label on agent-to-agent edges */}
+                      {isAgentEdge && !isDimmed && (
+                        <text
+                          x={from.x + Math.max(60, Math.abs(to.y - from.y) * 0.4) + 4}
+                          y={(from.y + to.y) / 2}
+                          fill={color}
+                          fontSize="8"
+                          fontFamily="var(--font-mono, monospace)"
+                          opacity={isHighlighted ? 1 : 0.6}
+                          dominantBaseline="middle"
+                        >
+                          {edge.protocol}
+                        </text>
+                      )}
+                    </g>
                   );
                 })}
               </svg>
@@ -293,6 +346,10 @@ export const GraphView = () => {
                 <span className="text-[10px] text-muted-foreground">{col.label} connections</span>
               </div>
             ))}
+            <div className="flex items-center gap-1.5">
+              <svg width="12" height="2"><line x1="0" y1="1" x2="12" y2="1" stroke="hsl(270, 70%, 60%)" strokeWidth="2" strokeDasharray="3 2" /></svg>
+              <span className="text-[10px] text-muted-foreground">MCP agent-to-agent</span>
+            </div>
             <div className="flex items-center gap-1.5">
               <AlertTriangle size={10} className="text-destructive" />
               <span className="text-[10px] text-muted-foreground">Risk indicator</span>
