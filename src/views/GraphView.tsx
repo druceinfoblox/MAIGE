@@ -28,6 +28,21 @@ const agentToExposure: Record<string, string[]> = {
   'rag-service.internal.company.com': ['mcp.company.com'],
 };
 
+// Agent → Agent MCP interactions (internal service-to-service communication)
+const agentToAgent: Record<string, { target: string; protocol: string }[]> = {
+  'agent-orchestrator.k8s.company.com': [
+    { target: 'llm-gateway.corp.company.com', protocol: 'MCP/gRPC' },
+    { target: 'rag-service.internal.company.com', protocol: 'MCP/HTTP' },
+  ],
+  'mcp.internal.company.com': [
+    { target: 'embeddings.ml.company.com', protocol: 'MCP/gRPC' },
+    { target: 'agent-orchestrator.k8s.company.com', protocol: 'MCP/HTTP' },
+  ],
+  'rag-service.internal.company.com': [
+    { target: 'embeddings.ml.company.com', protocol: 'MCP/HTTP' },
+  ],
+};
+
 type NodeId = string;
 type Column = 'users' | 'tools' | 'agents' | 'exposures';
 
