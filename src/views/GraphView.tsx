@@ -127,6 +127,15 @@ internalAgents.forEach(a => {
   });
 });
 
+// Agent → Agent MCP edges (self-referencing within agents column)
+internalAgents.forEach(a => {
+  const targets = agentToAgent[a.hostname] || [];
+  targets.forEach(({ target, protocol }) => {
+    const targetAgent = internalAgents.find(ag => ag.hostname === target);
+    if (targetAgent) edges.push({ from: `agent-${a.id}`, to: `agent-${targetAgent.id}`, type: 'agent-to-agent', protocol });
+  });
+});
+
 const allNodes = [...userNodes, ...toolNodes, ...agentNodes, ...exposureNodes];
 
 const columnConfig: { key: Column; label: string; icon: typeof Users; color: string }[] = [
