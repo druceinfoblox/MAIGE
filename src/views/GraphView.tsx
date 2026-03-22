@@ -58,6 +58,8 @@ interface GraphNode {
 interface GraphEdge {
   from: NodeId;
   to: NodeId;
+  type?: 'default' | 'agent-to-agent';
+  protocol?: string;
 }
 
 // Build nodes
