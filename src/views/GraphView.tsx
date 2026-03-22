@@ -347,6 +347,10 @@ export const GraphView = () => {
               </div>
             ))}
             <div className="flex items-center gap-1.5">
+              <span className="w-3 h-[2px] rounded" style={{ backgroundColor: MCP_COLOR, borderStyle: 'dashed' }} />
+              <span className="text-[10px] text-muted-foreground">MCP agent-to-agent</span>
+            </div>
+            <div className="flex items-center gap-1.5">
               <AlertTriangle size={10} className="text-destructive" />
               <span className="text-[10px] text-muted-foreground">Risk indicator</span>
             </div>
