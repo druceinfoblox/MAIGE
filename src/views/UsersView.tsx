@@ -4,6 +4,7 @@ import { ScrollReveal } from '@/components/ScrollReveal';
 import { StatusBadge } from '@/components/StatusBadge';
 import { SortableHeader, toggleSort, type SortState } from '@/components/SortableHeader';
 import { UserDetailPanel } from '@/components/UserDetailPanel';
+import { BlockButton, BlockedBadge } from '@/components/BlockButton';
 import { userActivities, type UserActivity } from '@/data/mock';
 
 const riskVariant = (r: string) => r === 'high' ? 'critical' as const : r === 'medium' ? 'warning' as const : 'success' as const;
@@ -95,6 +96,7 @@ export const UsersView = () => {
                   <SortableHeader label="Requests" sortKey="totalRequests" current={sort} onSort={handleSort} align="right" />
                   <SortableHeader label="Risk" sortKey="riskLevel" current={sort} onSort={handleSort} />
                   <SortableHeader label="Last Active" sortKey="lastActive" current={sort} onSort={handleSort} />
+                  <th className="px-5 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider w-10" />
                 </tr>
               </thead>
               <tbody>
@@ -112,7 +114,10 @@ export const UsersView = () => {
                           <div className="w-7 h-7 rounded-full bg-accent flex items-center justify-center text-[11px] font-semibold text-accent-foreground">
                             {user.email.split('.').map(p => p[0].toUpperCase()).slice(0, 2).join('')}
                           </div>
-                          <span className="font-medium text-card-foreground">{user.email}</span>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-card-foreground">{user.email}</span>
+                            <BlockedBadge entityId={user.id} />
+                          </div>
                         </div>
                       </td>
                       <td className="px-5 py-3.5 text-muted-foreground">{user.department}</td>
@@ -128,6 +133,15 @@ export const UsersView = () => {
                         <StatusBadge status={user.riskLevel} variant={riskVariant(user.riskLevel)} />
                       </td>
                       <td className="px-5 py-3.5 text-muted-foreground">{user.lastActive}</td>
+                      <td className="px-2 py-3.5 text-right" onClick={e => e.stopPropagation()}>
+                        <BlockButton
+                          compact
+                          entityId={user.id}
+                          entityType="user"
+                          entityName={user.email}
+                          entityDetail={user.department}
+                        />
+                      </td>
                     </tr>
                   ))
                 )}

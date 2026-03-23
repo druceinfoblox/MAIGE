@@ -1,5 +1,6 @@
 import { X, Shield, Globe, Clock, AlertTriangle, CheckCircle, ExternalLink, Lock, Unlock } from 'lucide-react';
 import { StatusBadge } from '@/components/StatusBadge';
+import { BlockButton } from '@/components/BlockButton';
 import { type ExternalExposure } from '@/data/mock';
 
 type Props = {
@@ -73,12 +74,20 @@ export const ExposureDetailPanel = ({ exposure, onClose }: Props) => {
                 <StatusBadge status={exposure.type} variant={exposure.type === 'mcp' ? 'critical' : exposure.type === 'llm-proxy' ? 'warning' : 'neutral'} />
               </div>
             </div>
-            <button
-              onClick={onClose}
-              className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors active:scale-95"
-            >
-              <X size={18} />
-            </button>
+            <div className="flex items-center gap-2">
+              <BlockButton
+                entityId={exposure.id}
+                entityType="exposure"
+                entityName={exposure.domain}
+                entityDetail={`${exposure.endpoint} (${exposure.type})`}
+              />
+              <button
+                onClick={onClose}
+                className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors active:scale-95"
+              >
+                <X size={18} />
+              </button>
+            </div>
           </div>
           <div className="mt-4 flex gap-0">
             <button className="px-4 py-1.5 text-sm font-medium text-primary border-b-2 border-primary">Overview</button>

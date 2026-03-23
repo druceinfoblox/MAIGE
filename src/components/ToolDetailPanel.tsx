@@ -1,5 +1,6 @@
 import { X, ExternalLink, Copy, Globe, Clock, Users, BarChart3, Shield } from 'lucide-react';
 import { StatusBadge } from '@/components/StatusBadge';
+import { BlockButton } from '@/components/BlockButton';
 import { type AITool, userActivities } from '@/data/mock';
 
 type Props = {
@@ -51,12 +52,20 @@ export const ToolDetailPanel = ({ tool, onClose }: Props) => {
               <h2 className="text-lg font-semibold text-foreground">{tool.name}</h2>
               <StatusBadge status={tool.status} variant={statusVariant} />
             </div>
-            <button
-              onClick={onClose}
-              className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors active:scale-95"
-            >
-              <X size={18} />
-            </button>
+            <div className="flex items-center gap-2">
+              <BlockButton
+                entityId={tool.id}
+                entityType="tool"
+                entityName={tool.name}
+                entityDetail={tool.domain}
+              />
+              <button
+                onClick={onClose}
+                className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors active:scale-95"
+              >
+                <X size={18} />
+              </button>
+            </div>
           </div>
           {/* Tab bar */}
           <div className="mt-4 flex gap-0">

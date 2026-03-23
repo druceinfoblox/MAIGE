@@ -4,6 +4,7 @@ import { ScrollReveal } from '@/components/ScrollReveal';
 import { StatusBadge } from '@/components/StatusBadge';
 import { SortableHeader, toggleSort, type SortState } from '@/components/SortableHeader';
 import { AgentDetailPanel } from '@/components/AgentDetailPanel';
+import { BlockButton, BlockedBadge } from '@/components/BlockButton';
 import { internalAgents, type InternalAgent } from '@/data/mock';
 
 const typeOptions = ['all', 'agent', 'api', 'unknown'] as const;
@@ -93,6 +94,7 @@ export const AgentsView = () => {
                   <SortableHeader label="Queries/Day" sortKey="queriesPerDay" current={sort} onSort={handleSort} align="right" />
                   <SortableHeader label="Confidence" sortKey="confidence" current={sort} onSort={handleSort} />
                   <SortableHeader label="First Seen" sortKey="firstSeen" current={sort} onSort={handleSort} />
+                  <th className="px-5 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider w-10" />
                 </tr>
               </thead>
               <tbody>
@@ -105,7 +107,12 @@ export const AgentsView = () => {
                 ) : (
                   filtered.map((agent) => (
                     <tr key={agent.id} onClick={() => setSelectedAgent(agent)} className="border-b border-border last:border-0 hover:bg-accent/30 transition-colors cursor-pointer">
-                      <td className="px-5 py-3.5 font-mono text-xs text-card-foreground">{agent.hostname}</td>
+                      <td className="px-5 py-3.5 font-mono text-xs text-card-foreground">
+                        <div className="flex items-center gap-2">
+                          {agent.hostname}
+                          <BlockedBadge entityId={agent.id} />
+                        </div>
+                      </td>
                       <td className="px-5 py-3.5">
                         <StatusBadge
                           status={agent.serviceType}
@@ -122,6 +129,15 @@ export const AgentsView = () => {
                         />
                       </td>
                       <td className="px-5 py-3.5 text-muted-foreground">{agent.firstSeen}</td>
+                      <td className="px-2 py-3.5 text-right" onClick={e => e.stopPropagation()}>
+                        <BlockButton
+                          compact
+                          entityId={agent.id}
+                          entityType="agent"
+                          entityName={agent.hostname}
+                          entityDetail={agent.protocol}
+                        />
+                      </td>
                     </tr>
                   ))
                 )}

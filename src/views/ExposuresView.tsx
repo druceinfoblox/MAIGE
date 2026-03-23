@@ -4,6 +4,7 @@ import { ScrollReveal } from '@/components/ScrollReveal';
 import { StatusBadge } from '@/components/StatusBadge';
 import { SortableHeader, toggleSort, type SortState } from '@/components/SortableHeader';
 import { ExposureDetailPanel } from '@/components/ExposureDetailPanel';
+import { BlockButton, BlockedBadge } from '@/components/BlockButton';
 import { externalExposures, type ExternalExposure } from '@/data/mock';
 
 const riskVariant = (r: string) => {
@@ -102,6 +103,7 @@ export const ExposuresView = () => {
                   <SortableHeader label="Response" sortKey="responseCode" current={sort} onSort={handleSort} align="center" />
                   <SortableHeader label="TLS" sortKey="tlsValid" current={sort} onSort={handleSort} align="center" />
                   <SortableHeader label="Last Probed" sortKey="lastProbed" current={sort} onSort={handleSort} />
+                  <th className="px-5 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider w-10" />
                 </tr>
               </thead>
               <tbody>
@@ -114,7 +116,12 @@ export const ExposuresView = () => {
                 ) : (
                   filtered.map((exp) => (
                     <tr key={exp.id} onClick={() => setSelected(exp)} className="border-b border-border last:border-0 hover:bg-accent/30 transition-colors cursor-pointer">
-                      <td className="px-5 py-3.5 font-mono text-xs text-card-foreground">{exp.domain}</td>
+                      <td className="px-5 py-3.5 font-mono text-xs text-card-foreground">
+                        <div className="flex items-center gap-2">
+                          {exp.domain}
+                          <BlockedBadge entityId={exp.id} />
+                        </div>
+                      </td>
                       <td className="px-5 py-3.5 font-mono text-xs text-muted-foreground">{exp.endpoint}</td>
                       <td className="px-5 py-3.5">
                         <StatusBadge status={exp.type} variant={exp.type === 'mcp' ? 'critical' : exp.type === 'llm-proxy' ? 'warning' : 'neutral'} />
@@ -129,6 +136,15 @@ export const ExposuresView = () => {
                         <span className={`text-xs font-medium ${exp.tlsValid ? 'text-success' : 'text-destructive'}`}>{exp.tlsValid ? '✓ Valid' : '✗ Invalid'}</span>
                       </td>
                       <td className="px-5 py-3.5 text-muted-foreground">{exp.lastProbed}</td>
+                      <td className="px-2 py-3.5 text-right" onClick={e => e.stopPropagation()}>
+                        <BlockButton
+                          compact
+                          entityId={exp.id}
+                          entityType="exposure"
+                          entityName={exp.domain}
+                          entityDetail={`${exp.endpoint} (${exp.type})`}
+                        />
+                      </td>
                     </tr>
                   ))
                 )}

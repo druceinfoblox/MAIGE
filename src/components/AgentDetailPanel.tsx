@@ -1,5 +1,6 @@
 import { X, Server, Globe, Clock, Users, BarChart3, Shield, ExternalLink, CheckCircle, AlertTriangle } from 'lucide-react';
 import { StatusBadge } from '@/components/StatusBadge';
+import { BlockButton } from '@/components/BlockButton';
 import { type InternalAgent, externalExposures, userActivities } from '@/data/mock';
 
 type Props = {
@@ -79,12 +80,20 @@ export const AgentDetailPanel = ({ agent, onClose }: Props) => {
                 <StatusBadge status={agent.confidence} variant={confVariant} />
               </div>
             </div>
-            <button
-              onClick={onClose}
-              className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors active:scale-95"
-            >
-              <X size={18} />
-            </button>
+            <div className="flex items-center gap-2">
+              <BlockButton
+                entityId={agent.id}
+                entityType="agent"
+                entityName={agent.hostname}
+                entityDetail={agent.protocol}
+              />
+              <button
+                onClick={onClose}
+                className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors active:scale-95"
+              >
+                <X size={18} />
+              </button>
+            </div>
           </div>
           <div className="mt-4 flex gap-0">
             <button className="px-4 py-1.5 text-sm font-medium text-primary border-b-2 border-primary">Overview</button>

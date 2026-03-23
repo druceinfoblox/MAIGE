@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import {
   LayoutDashboard, Laptop, Server, Globe, GitBranch,
-  Radar, Users, ChevronDown, ChevronUp,
+  Radar, Users, ChevronDown, ChevronUp, ShieldOff,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { usePolicyStore } from '@/hooks/usePolicyStore';
 
-type View = 'dashboard' | 'tools' | 'users' | 'agents' | 'exposures' | 'graph';
+type View = 'dashboard' | 'tools' | 'users' | 'agents' | 'exposures' | 'graph' | 'policy';
 
 type Props = {
   activeView: View;
@@ -16,6 +17,7 @@ const clientViews: View[] = ['tools', 'users'];
 
 export const AppSidebar = ({ activeView, onNavigate }: Props) => {
   const [clientsOpen, setClientsOpen] = useState(clientViews.includes(activeView));
+  const { count: policyCount } = usePolicyStore();
 
   const isActive = (view: View) => activeView === view;
   const isClientActive = clientViews.includes(activeView);
@@ -98,6 +100,17 @@ export const AppSidebar = ({ activeView, onNavigate }: Props) => {
         <button className={itemClass(isActive('graph'))} onClick={() => onNavigate('graph')}>
           <GitBranch className="w-5 h-5 mb-1" />
           <span className="text-[10px] leading-tight font-medium">Visualization</span>
+        </button>
+
+        {/* Policy */}
+        <button className={cn(itemClass(isActive('policy')), 'relative')} onClick={() => onNavigate('policy')}>
+          <ShieldOff className="w-5 h-5 mb-1" />
+          <span className="text-[10px] leading-tight font-medium">Policy</span>
+          {policyCount > 0 && (
+            <span className="absolute top-1.5 right-2 inline-flex items-center justify-center w-4 h-4 rounded-full bg-destructive text-white text-[8px] font-bold">
+              {policyCount}
+            </span>
+          )}
         </button>
 
       </nav>

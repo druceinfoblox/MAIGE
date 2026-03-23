@@ -4,6 +4,7 @@ import { ScrollReveal } from '@/components/ScrollReveal';
 import { StatusBadge } from '@/components/StatusBadge';
 import { SortableHeader, toggleSort, type SortState } from '@/components/SortableHeader';
 import { ToolDetailPanel } from '@/components/ToolDetailPanel';
+import { BlockButton, BlockedBadge } from '@/components/BlockButton';
 import { aiTools, type AITool } from '@/data/mock';
 
 const statusOptions = ['all', 'approved', 'unknown', 'unsanctioned'] as const;
@@ -96,6 +97,7 @@ export const ToolsView = () => {
                   <SortableHeader label="Requests" sortKey="requests" current={sort} onSort={handleSort} align="right" />
                   <SortableHeader label="First Seen" sortKey="firstSeen" current={sort} onSort={handleSort} />
                   <SortableHeader label="Last Seen" sortKey="lastSeen" current={sort} onSort={handleSort} />
+                  <th className="px-5 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider w-10" />
                 </tr>
               </thead>
               <tbody>
@@ -108,7 +110,12 @@ export const ToolsView = () => {
                 ) : (
                   filtered.map((tool) => (
                     <tr key={tool.id} onClick={() => setSelectedTool(tool)} className="border-b border-border last:border-0 hover:bg-accent/30 transition-colors cursor-pointer">
-                      <td className="px-5 py-3.5 font-medium text-card-foreground">{tool.name}</td>
+                      <td className="px-5 py-3.5 font-medium text-card-foreground">
+                        <div className="flex items-center gap-2">
+                          {tool.name}
+                          <BlockedBadge entityId={tool.id} />
+                        </div>
+                      </td>
                       <td className="px-5 py-3.5 font-mono text-xs text-muted-foreground">{tool.domain}</td>
                       <td className="px-5 py-3.5 text-muted-foreground">{tool.category}</td>
                       <td className="px-5 py-3.5">
@@ -118,6 +125,15 @@ export const ToolsView = () => {
                       <td className="px-5 py-3.5 text-right metric-text">{tool.requests.toLocaleString()}</td>
                       <td className="px-5 py-3.5 text-muted-foreground">{tool.firstSeen}</td>
                       <td className="px-5 py-3.5 text-muted-foreground">{tool.lastSeen}</td>
+                      <td className="px-2 py-3.5 text-right" onClick={e => e.stopPropagation()}>
+                        <BlockButton
+                          compact
+                          entityId={tool.id}
+                          entityType="tool"
+                          entityName={tool.name}
+                          entityDetail={tool.domain}
+                        />
+                      </td>
                     </tr>
                   ))
                 )}

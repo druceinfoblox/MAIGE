@@ -6,9 +6,10 @@ import { UsersView } from '@/views/UsersView';
 import { AgentsView } from '@/views/AgentsView';
 import { ExposuresView } from '@/views/ExposuresView';
 import { GraphView } from '@/views/GraphView';
+import { PolicyView } from '@/views/PolicyView';
 import InfobloxLogo from '@/components/InfobloxLogo';
 
-type View = 'dashboard' | 'tools' | 'users' | 'agents' | 'exposures' | 'graph';
+type View = 'dashboard' | 'tools' | 'users' | 'agents' | 'exposures' | 'graph' | 'policy';
 
 const viewTitles: Record<View, string> = {
   dashboard: 'Dashboard',
@@ -17,6 +18,7 @@ const viewTitles: Record<View, string> = {
   users: 'User Mapping',
   agents: 'Internal Agents',
   exposures: 'External Exposures',
+  policy: 'Policy',
 };
 
 export type { View };
@@ -58,6 +60,8 @@ const Index = () => {
             <UsersView />
           ) : activeView === 'agents' ? (
             <AgentsView />
+          ) : activeView === 'policy' ? (
+            <PolicyView />
           ) : (
             <ExposuresView />
           )}
