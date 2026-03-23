@@ -17,7 +17,7 @@ const viewTitles: Record<View, string> = {
   tools: 'AI Tool Inventory',
   users: 'User Mapping',
   agents: 'Internal Agents',
-  exposures: 'External Exposures',
+  exposures: 'Exposures',
   policy: 'Policy',
 };
 

@@ -14,6 +14,14 @@ export type PolicyRule = {
 
 const STORAGE_KEY = 'maige_policy_rules';
 
+/**
+ * Compose a globally unique key from type + id so that e.g. tool "1" and
+ * user "1" never collide in the policy store.
+ */
+export function policyKey(entityType: EntityType, entityId: string): string {
+  return `${entityType}:${entityId}`;
+}
+
 function loadRules(): PolicyRule[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -44,8 +52,13 @@ export function usePolicyStore() {
     return () => { _listeners.delete(fn); };
   }, []);
 
-  const isBlocked = useCallback((entityId: string) => {
-    return _rules.some(r => r.entityId === entityId);
+  /**
+   * Returns true only if THIS specific entity type+id is blocked.
+   * A blocked tool does NOT cause isBlocked to return true for a user with the same raw id.
+   */
+  const isBlocked = useCallback((entityType: EntityType, entityId: string) => {
+    const key = policyKey(entityType, entityId);
+    return _rules.some(r => r.entityId === key);
   }, []);
 
   const toggle = useCallback((rule: Omit<PolicyRule, 'id' | 'action' | 'createdAt'>) => {

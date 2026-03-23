@@ -113,7 +113,7 @@ export const ToolsView = () => {
                       <td className="px-5 py-3.5 font-medium text-card-foreground">
                         <div className="flex items-center gap-2">
                           {tool.name}
-                          <BlockedBadge entityId={tool.id} />
+                          <BlockedBadge entityId={tool.id} entityType="tool" />
                         </div>
                       </td>
                       <td className="px-5 py-3.5 font-mono text-xs text-muted-foreground">{tool.domain}</td>

@@ -1,6 +1,6 @@
 import { ShieldOff, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { usePolicyStore, type EntityType } from '@/hooks/usePolicyStore';
+import { usePolicyStore, policyKey, type EntityType } from '@/hooks/usePolicyStore';
 
 type Props = {
   entityId: string;
@@ -21,11 +21,13 @@ export const BlockButton = ({
   className,
 }: Props) => {
   const { isBlocked, toggle } = usePolicyStore();
-  const blocked = isBlocked(entityId);
+  // Use namespaced key so tool "1" ≠ user "1"
+  const key = policyKey(entityType, entityId);
+  const blocked = isBlocked(entityType, entityId);
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    toggle({ entityId, entityType, entityName, entityDetail });
+    toggle({ entityId: key, entityType, entityName, entityDetail });
   };
 
   if (compact) {
@@ -69,9 +71,9 @@ export const BlockButton = ({
 };
 
 /** Inline "BLOCKED" badge shown in table rows when entity is blocked */
-export const BlockedBadge = ({ entityId }: { entityId: string }) => {
+export const BlockedBadge = ({ entityId, entityType }: { entityId: string; entityType: EntityType }) => {
   const { isBlocked } = usePolicyStore();
-  if (!isBlocked(entityId)) return null;
+  if (!isBlocked(entityType, entityId)) return null;
   return (
     <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-destructive/15 text-destructive uppercase tracking-wide">
       <ShieldOff size={9} /> Blocked

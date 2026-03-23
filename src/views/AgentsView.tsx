@@ -110,7 +110,7 @@ export const AgentsView = () => {
                       <td className="px-5 py-3.5 font-mono text-xs text-card-foreground">
                         <div className="flex items-center gap-2">
                           {agent.hostname}
-                          <BlockedBadge entityId={agent.id} />
+                          <BlockedBadge entityId={agent.id} entityType="agent" />
                         </div>
                       </td>
                       <td className="px-5 py-3.5">

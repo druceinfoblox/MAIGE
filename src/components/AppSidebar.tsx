@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
-  LayoutDashboard, Laptop, Server, Globe, GitBranch,
-  Radar, Users, ChevronDown, ChevronUp, ShieldOff,
+  LayoutDashboard, Laptop, Server, GitBranch,
+  Radar, Users, ChevronDown, ChevronUp, ShieldOff, TriangleAlert,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { usePolicyStore } from '@/hooks/usePolicyStore';
@@ -87,10 +87,10 @@ export const AppSidebar = ({ activeView, onNavigate }: Props) => {
           <span className="text-[10px] leading-tight font-medium">Servers</span>
         </button>
 
-        {/* External */}
+        {/* Exposures */}
         <button className={cn(itemClass(isActive('exposures')), 'relative')} onClick={() => onNavigate('exposures')}>
-          <Globe className="w-5 h-5 mb-1" />
-          <span className="text-[10px] leading-tight font-medium">External</span>
+          <TriangleAlert className="w-5 h-5 mb-1" />
+          <span className="text-[10px] leading-tight font-medium">Exposures</span>
           {!isActive('exposures') && (
             <span className="absolute top-1.5 right-2 inline-flex items-center justify-center w-4 h-4 rounded-full bg-destructive text-white text-[8px] font-bold">3</span>
           )}

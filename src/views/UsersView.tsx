@@ -116,7 +116,7 @@ export const UsersView = () => {
                           </div>
                           <div className="flex items-center gap-2">
                             <span className="font-medium text-card-foreground">{user.email}</span>
-                            <BlockedBadge entityId={user.id} />
+                            <BlockedBadge entityId={user.id} entityType="user" />
                           </div>
                         </div>
                       </td>

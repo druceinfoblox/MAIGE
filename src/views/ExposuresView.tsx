@@ -119,7 +119,7 @@ export const ExposuresView = () => {
                       <td className="px-5 py-3.5 font-mono text-xs text-card-foreground">
                         <div className="flex items-center gap-2">
                           {exp.domain}
-                          <BlockedBadge entityId={exp.id} />
+                          <BlockedBadge entityId={exp.id} entityType="exposure" />
                         </div>
                       </td>
                       <td className="px-5 py-3.5 font-mono text-xs text-muted-foreground">{exp.endpoint}</td>
