@@ -1,6 +1,9 @@
 import { useState } from 'react';
-import { LayoutDashboard, Laptop, ChevronDown, ChevronRight, Server, Globe, GitBranch, Radar, Users } from 'lucide-react';
-import InfobloxLogo from './InfobloxLogo';
+import {
+  LayoutDashboard, Laptop, Server, Globe, GitBranch,
+  Radar, Users, ChevronDown, ChevronUp,
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 type View = 'dashboard' | 'tools' | 'users' | 'agents' | 'exposures' | 'graph';
 
@@ -9,135 +12,101 @@ type Props = {
   onNavigate: (view: View) => void;
 };
 
+const clientViews: View[] = ['tools', 'users'];
+
 export const AppSidebar = ({ activeView, onNavigate }: Props) => {
-  // Clients submenu open if either sub-view is active, or user has toggled it
-  const clientViews: View[] = ['tools', 'users'];
   const [clientsOpen, setClientsOpen] = useState(clientViews.includes(activeView));
 
   const isActive = (view: View) => activeView === view;
   const isClientActive = clientViews.includes(activeView);
 
-  const navItemClass = (active: boolean) =>
-    `w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors duration-150 rounded-lg
-     ${active
-       ? 'bg-sidebar-accent text-[#172628] font-semibold'
-       : 'text-[#3d4f41] hover:bg-sidebar-accent/60 hover:text-[#172628]'
-     }`;
+  const itemClass = (active: boolean) => cn(
+    'w-full flex flex-col items-center justify-center py-2.5 px-1 transition-colors cursor-pointer',
+    active
+      ? 'bg-primary text-white'
+      : 'text-foreground/50 hover:bg-black/5 hover:text-foreground/80'
+  );
 
-  const subItemClass = (active: boolean) =>
-    `w-full flex items-center gap-3 pl-11 pr-4 py-2 text-sm transition-colors duration-150 rounded-lg
-     ${active
-       ? 'bg-sidebar-accent text-[#172628] font-semibold'
-       : 'text-[#5a6e5e] hover:bg-sidebar-accent/60 hover:text-[#172628]'
-     }`;
+  const subItemClass = (active: boolean) => cn(
+    'w-full flex flex-col items-center justify-center py-2 px-1 transition-colors cursor-pointer',
+    active
+      ? 'bg-primary text-white'
+      : 'text-foreground/60 hover:bg-black/5 hover:text-foreground/80'
+  );
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-sidebar flex flex-col z-50">
-
-      {/* Logo — dark header matching Infoblox top nav */}
-      <div className="flex items-center gap-3 px-5 py-4 bg-[#172628] border-b border-[#0d1a1c]">
-        <InfobloxLogo className="h-5 w-auto text-white" />
-        <div>
-          <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#00BD4D] font-heading leading-none">MAIGE</p>
-          <p className="text-[9px] text-white/50 uppercase tracking-wider leading-none mt-0.5">AI Governance</p>
-        </div>
-      </div>
-
-      {/* Nav */}
-      <nav className="flex-1 px-3 py-3 space-y-0.5 overflow-y-auto scrollbar-thin">
+    <aside
+      className="flex flex-col h-full border-r border-border/50 shrink-0"
+      style={{ backgroundColor: '#E9EFE6', width: '5.5rem' }}
+    >
+      <nav className="flex-1 flex flex-col items-center py-3 space-y-0.5">
 
         {/* Dashboard */}
-        <button
-          onClick={() => onNavigate('dashboard')}
-          className={navItemClass(isActive('dashboard'))}
-        >
-          <LayoutDashboard className="w-4 h-4 flex-shrink-0" />
-          <span>Dashboard</span>
-          {isActive('dashboard') && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-primary" />}
+        <button className={itemClass(isActive('dashboard'))} onClick={() => onNavigate('dashboard')}>
+          <LayoutDashboard className="w-5 h-5 mb-1" />
+          <span className="text-[10px] leading-tight font-medium">Dashboard</span>
         </button>
 
         {/* Clients — collapsible group */}
-        <div>
+        <div className="w-full">
           <button
+            className={cn(itemClass(isClientActive && !clientsOpen), 'relative')}
             onClick={() => setClientsOpen(!clientsOpen)}
-            className={navItemClass(isClientActive && !clientsOpen)}
           >
-            <Laptop className="w-4 h-4 flex-shrink-0" />
-            <span className="flex-1 text-left">Clients</span>
+            <Laptop className="w-5 h-5 mb-1" />
+            <span className="text-[10px] leading-tight font-medium">Clients</span>
             {clientsOpen
-              ? <ChevronDown className="w-3.5 h-3.5 opacity-50" />
-              : <ChevronRight className="w-3.5 h-3.5 opacity-50" />
+              ? <ChevronUp className="w-3 h-3 absolute bottom-1 right-2 opacity-40" />
+              : <ChevronDown className="w-3 h-3 absolute bottom-1 right-2 opacity-40" />
             }
           </button>
 
           {clientsOpen && (
-            <div className="mt-0.5 space-y-0.5">
-              <button
-                onClick={() => onNavigate('tools')}
-                className={subItemClass(isActive('tools'))}
-              >
-                <Radar className="w-3.5 h-3.5 flex-shrink-0" />
-                <span>AI Tool Inventory</span>
+            <div className="w-full border-t border-black/10">
+              <button className={subItemClass(isActive('tools'))} onClick={() => onNavigate('tools')}>
+                <Radar className="w-4 h-4 mb-0.5" />
+                <span className="text-[9px] leading-tight font-medium text-center px-1">AI Tools</span>
               </button>
-              <button
-                onClick={() => onNavigate('users')}
-                className={subItemClass(isActive('users'))}
-              >
-                <Users className="w-3.5 h-3.5 flex-shrink-0" />
-                <span>User Mapping</span>
-                <span className="ml-auto inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-warning text-white text-[10px] font-bold">
-                  12
-                </span>
+              <button className={subItemClass(isActive('users'))} onClick={() => onNavigate('users')}>
+                <Users className="w-4 h-4 mb-0.5" />
+                <span className="text-[9px] leading-tight font-medium text-center px-1">Users</span>
+                {!isActive('users') && (
+                  <span className="mt-0.5 inline-flex items-center justify-center w-4 h-4 rounded-full bg-warning text-white text-[8px] font-bold">12</span>
+                )}
               </button>
+              <div className="border-t border-black/10" />
             </div>
           )}
         </div>
 
         {/* Servers */}
-        <button
-          onClick={() => onNavigate('agents')}
-          className={navItemClass(isActive('agents'))}
-        >
-          <Server className="w-4 h-4 flex-shrink-0" />
-          <span>Servers</span>
-          {isActive('agents') && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-primary" />}
+        <button className={itemClass(isActive('agents'))} onClick={() => onNavigate('agents')}>
+          <Server className="w-5 h-5 mb-1" />
+          <span className="text-[10px] leading-tight font-medium">Servers</span>
         </button>
 
         {/* External */}
-        <button
-          onClick={() => onNavigate('exposures')}
-          className={navItemClass(isActive('exposures'))}
-        >
-          <Globe className="w-4 h-4 flex-shrink-0" />
-          <span>External</span>
-          <span className="ml-auto inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-destructive text-white text-[10px] font-bold">
-            3
-          </span>
+        <button className={cn(itemClass(isActive('exposures')), 'relative')} onClick={() => onNavigate('exposures')}>
+          <Globe className="w-5 h-5 mb-1" />
+          <span className="text-[10px] leading-tight font-medium">External</span>
+          {!isActive('exposures') && (
+            <span className="absolute top-1.5 right-2 inline-flex items-center justify-center w-4 h-4 rounded-full bg-destructive text-white text-[8px] font-bold">3</span>
+          )}
         </button>
 
         {/* Visualization */}
-        <button
-          onClick={() => onNavigate('graph')}
-          className={navItemClass(isActive('graph'))}
-        >
-          <GitBranch className="w-4 h-4 flex-shrink-0" />
-          <span>Visualization</span>
-          {isActive('graph') && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-primary" />}
+        <button className={itemClass(isActive('graph'))} onClick={() => onNavigate('graph')}>
+          <GitBranch className="w-5 h-5 mb-1" />
+          <span className="text-[10px] leading-tight font-medium">Visualization</span>
         </button>
 
       </nav>
 
-      {/* Status bar */}
-      <div className="px-5 py-4 border-t border-sidebar-border bg-sidebar">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-primary animate-pulse flex-shrink-0" />
-          <div className="text-xs">
-            <p className="text-sidebar-foreground font-medium">DNS ingestion live</p>
-            <p className="text-sidebar-muted">Last scan: 4 min ago</p>
-          </div>
-        </div>
+      {/* Status indicator at bottom */}
+      <div className="flex flex-col items-center pb-4 pt-2 border-t border-black/10">
+        <span className="w-2 h-2 rounded-full bg-primary animate-pulse mb-1" />
+        <span className="text-[8px] text-foreground/40 font-medium text-center leading-tight px-1">DNS live</span>
       </div>
-
     </aside>
   );
 };

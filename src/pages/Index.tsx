@@ -6,11 +6,12 @@ import { UsersView } from '@/views/UsersView';
 import { AgentsView } from '@/views/AgentsView';
 import { ExposuresView } from '@/views/ExposuresView';
 import { GraphView } from '@/views/GraphView';
+import InfobloxLogo from '@/components/InfobloxLogo';
 
 type View = 'dashboard' | 'tools' | 'users' | 'agents' | 'exposures' | 'graph';
 
 const viewTitles: Record<View, string> = {
-  dashboard: 'Findings',
+  dashboard: 'Dashboard',
   graph: 'Asset Graph',
   tools: 'AI Tool Inventory',
   users: 'User Mapping',
@@ -24,28 +25,50 @@ const Index = () => {
   const [activeView, setActiveView] = useState<View>('dashboard');
 
   return (
-    <div className="min-h-screen bg-background">
-      <AppSidebar activeView={activeView} onNavigate={setActiveView} />
-      {/* Top nav bar — spans content area to the right of sidebar */}
-      <header className="fixed top-0 left-64 right-0 h-14 bg-[#172628] z-40 flex items-center px-6 justify-between border-b border-[#0d1a1c]">
-        <span className="text-white/70 text-sm font-medium">{viewTitles[activeView]}</span>
-        <span className="text-[#00BD4D] text-xs font-semibold uppercase tracking-widest">Managed AI Governance Engine</span>
-      </header>
-      <main className="ml-64 pt-14 p-8">
-        {activeView === 'dashboard' ? (
-          <DashboardView onNavigate={setActiveView} />
-        ) : activeView === 'graph' ? (
-          <GraphView />
-        ) : activeView === 'tools' ? (
-          <ToolsView />
-        ) : activeView === 'users' ? (
-          <UsersView />
-        ) : activeView === 'agents' ? (
-          <AgentsView />
-        ) : (
-          <ExposuresView />
-        )}
-      </main>
+    <div className="flex flex-col h-screen bg-background overflow-hidden">
+
+      {/* Top nav — identical structure to Lighthouse */}
+      <nav className="h-14 flex items-center px-4 justify-between sticky top-0 z-50 shrink-0" style={{ backgroundColor: '#172628' }}>
+        <div className="flex items-center space-x-3">
+          <InfobloxLogo className="h-[22px] w-auto text-white" />
+          <div className="h-5 w-px bg-white/20" />
+          <span className="text-white font-semibold text-sm tracking-wide">
+            MAIGE <span className="font-normal opacity-60">(AI Governance)</span>
+          </span>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="text-white/40 text-xs">{viewTitles[activeView]}</span>
+        </div>
+      </nav>
+
+      {/* Mint accent strip — identical to Lighthouse */}
+      <div className="h-[3px] shrink-0" style={{ backgroundColor: '#98D7BF' }} />
+
+      {/* Body: sidebar + content */}
+      <div className="flex flex-1 overflow-hidden">
+        <AppSidebar activeView={activeView} onNavigate={setActiveView} />
+        <main className="flex-1 overflow-y-auto bg-background p-6">
+          {activeView === 'dashboard' ? (
+            <DashboardView onNavigate={setActiveView} />
+          ) : activeView === 'graph' ? (
+            <GraphView />
+          ) : activeView === 'tools' ? (
+            <ToolsView />
+          ) : activeView === 'users' ? (
+            <UsersView />
+          ) : activeView === 'agents' ? (
+            <AgentsView />
+          ) : (
+            <ExposuresView />
+          )}
+        </main>
+      </div>
+
+      {/* Footer — identical to Lighthouse */}
+      <div className="text-center text-xs text-muted-foreground py-1 border-t border-border bg-card shrink-0">
+        Infoblox MAIGE &nbsp;·&nbsp; Managed AI Governance Engine
+      </div>
+
     </div>
   );
 };
