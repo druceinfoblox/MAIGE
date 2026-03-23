@@ -1,6 +1,15 @@
+import { useState } from 'react';
 import { ShieldOff, Shield, Trash2 } from 'lucide-react';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import { usePolicyStore, type EntityType } from '@/hooks/usePolicyStore';
+import { ToolDetailPanel } from '@/components/ToolDetailPanel';
+import { UserDetailPanel } from '@/components/UserDetailPanel';
+import { AgentDetailPanel } from '@/components/AgentDetailPanel';
+import { ExposureDetailPanel } from '@/components/ExposureDetailPanel';
+import {
+  aiTools, userActivities, internalAgents, externalExposures,
+  type AITool, type UserActivity, type InternalAgent, type ExternalExposure,
+} from '@/data/mock';
 
 const entityTypeLabels: Record<EntityType, string> = {
   tool: 'AI Tool',
@@ -27,13 +36,54 @@ function formatDate(iso: string): string {
   }
 }
 
+/** Strip the "type:" namespace prefix to recover the original mock data id */
+function rawId(namespacedId: string): string {
+  const idx = namespacedId.indexOf(':');
+  return idx !== -1 ? namespacedId.slice(idx + 1) : namespacedId;
+}
+
+type PanelState =
+  | { kind: 'tool'; entity: AITool }
+  | { kind: 'user'; entity: UserActivity }
+  | { kind: 'agent'; entity: InternalAgent }
+  | { kind: 'exposure'; entity: ExternalExposure }
+  | null;
+
+function resolveEntity(entityType: EntityType, namespacedId: string): PanelState {
+  const id = rawId(namespacedId);
+  switch (entityType) {
+    case 'tool': {
+      const e = aiTools.find(t => t.id === id);
+      return e ? { kind: 'tool', entity: e } : null;
+    }
+    case 'user': {
+      const e = userActivities.find(u => u.id === id);
+      return e ? { kind: 'user', entity: e } : null;
+    }
+    case 'agent': {
+      const e = internalAgents.find(a => a.id === id);
+      return e ? { kind: 'agent', entity: e } : null;
+    }
+    case 'exposure': {
+      const e = externalExposures.find(x => x.id === id);
+      return e ? { kind: 'exposure', entity: e } : null;
+    }
+  }
+}
+
 export const PolicyView = () => {
   const { rules, remove } = usePolicyStore();
+  const [panel, setPanel] = useState<PanelState>(null);
 
   // Most recently blocked first
   const sorted = [...rules].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
+
+  const handleRowClick = (entityType: EntityType, namespacedId: string) => {
+    const resolved = resolveEntity(entityType, namespacedId);
+    setPanel(resolved);
+  };
 
   return (
     <div className="space-y-6">
@@ -54,7 +104,7 @@ export const PolicyView = () => {
             <h3 className="text-base font-semibold text-foreground mb-2">No policy rules yet</h3>
             <p className="text-sm text-muted-foreground max-w-sm leading-relaxed">
               Block elements from the <strong>AI Tools</strong>, <strong>Users</strong>,{' '}
-              <strong>Servers</strong>, or <strong>External</strong> views using the{' '}
+              <strong>Servers</strong>, or <strong>Exposures</strong> views using the{' '}
               <span className="inline-flex items-center gap-1 text-muted-foreground">
                 <ShieldOff size={12} /> Block
               </span>{' '}
@@ -70,6 +120,7 @@ export const PolicyView = () => {
               <span className="text-sm font-medium text-destructive">
                 {sorted.length} blocked {sorted.length === 1 ? 'entity' : 'entities'}
               </span>
+              <span className="text-xs text-muted-foreground ml-1">— click a row to view details</span>
             </div>
 
             <div className="overflow-x-auto">
@@ -87,7 +138,8 @@ export const PolicyView = () => {
                   {sorted.map((rule) => (
                     <tr
                       key={rule.id}
-                      className="border-b border-border last:border-0 hover:bg-accent/20 transition-colors"
+                      onClick={() => handleRowClick(rule.entityType, rule.entityId)}
+                      className="border-b border-border last:border-0 hover:bg-accent/30 transition-colors cursor-pointer"
                     >
                       {/* Type badge */}
                       <td className="px-5 py-3.5">
@@ -102,7 +154,7 @@ export const PolicyView = () => {
                         {rule.entityName}
                       </td>
 
-                      {/* Detail (domain / email / hostname / endpoint) */}
+                      {/* Detail */}
                       <td className="px-5 py-3.5 font-mono text-xs text-muted-foreground max-w-[220px] truncate">
                         {rule.entityDetail}
                       </td>
@@ -112,8 +164,8 @@ export const PolicyView = () => {
                         {formatDate(rule.createdAt)}
                       </td>
 
-                      {/* Remove */}
-                      <td className="px-5 py-3.5 text-right">
+                      {/* Remove — stop propagation so row click doesn't also fire */}
+                      <td className="px-5 py-3.5 text-right" onClick={e => e.stopPropagation()}>
                         <button
                           onClick={() => remove(rule.entityId)}
                           title="Remove block"
@@ -135,6 +187,20 @@ export const PolicyView = () => {
           </div>
         )}
       </ScrollReveal>
+
+      {/* Detail panels — slide out from right, matching the originating view */}
+      {panel?.kind === 'tool' && (
+        <ToolDetailPanel tool={panel.entity} onClose={() => setPanel(null)} />
+      )}
+      {panel?.kind === 'user' && (
+        <UserDetailPanel user={panel.entity} onClose={() => setPanel(null)} />
+      )}
+      {panel?.kind === 'agent' && (
+        <AgentDetailPanel agent={panel.entity} onClose={() => setPanel(null)} />
+      )}
+      {panel?.kind === 'exposure' && (
+        <ExposureDetailPanel exposure={panel.entity} onClose={() => setPanel(null)} />
+      )}
     </div>
   );
 };

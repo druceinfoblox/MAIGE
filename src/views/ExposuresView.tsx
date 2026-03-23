@@ -13,6 +13,13 @@ const riskVariant = (r: string) => {
   return 'neutral' as const;
 };
 
+const riskSummary: Record<string, string> = {
+  critical: 'Publicly accessible, no auth — immediate risk',
+  high: 'Internet-exposed, significant attack surface',
+  medium: 'Partially protected, access controls need review',
+  low: 'Adequate protections, continue monitoring',
+};
+
 const riskOptions = ['all', 'critical', 'high', 'medium', 'low'] as const;
 const typeOptions = ['all', 'mcp', 'api', 'llm-proxy', 'unknown'] as const;
 
@@ -96,6 +103,7 @@ export const ExposuresView = () => {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border bg-accent/50">
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Summary</th>
                   <SortableHeader label="Domain" sortKey="domain" current={sort} onSort={handleSort} />
                   <SortableHeader label="Endpoint" sortKey="endpoint" current={sort} onSort={handleSort} />
                   <SortableHeader label="Type" sortKey="type" current={sort} onSort={handleSort} />
@@ -116,6 +124,9 @@ export const ExposuresView = () => {
                 ) : (
                   filtered.map((exp) => (
                     <tr key={exp.id} onClick={() => setSelected(exp)} className="border-b border-border last:border-0 hover:bg-accent/30 transition-colors cursor-pointer">
+                      <td className="px-5 py-3.5 text-xs text-muted-foreground max-w-[200px]">
+                        {riskSummary[exp.riskLevel] ?? '—'}
+                      </td>
                       <td className="px-5 py-3.5 font-mono text-xs text-card-foreground">
                         <div className="flex items-center gap-2">
                           {exp.domain}
