@@ -6,29 +6,28 @@
 
 @layer base {
   :root {
-    /* Dark navy theme matching reference */
-    --background: 210 36% 10%;
-    --foreground: 210 20% 90%;
+    /* Infoblox Lighthouse light theme */
+    --background: 180 8% 96%;        /* #F4F6F6 page bg */
+    --foreground: 195 24% 12%;       /* #172628 dark teal text */
 
-    --card: 210 32% 14%;
-    --card-foreground: 210 20% 90%;
+    --card: 0 0% 100%;               /* white cards */
+    --card-foreground: 195 24% 12%;
 
-    --popover: 210 32% 14%;
-    --popover-foreground: 210 20% 90%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 195 24% 12%;
 
     /* Infoblox green #00BD4D → hsl(144, 100%, 37%) */
     --primary: 144 100% 37%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 24% 20%;
-    --secondary-foreground: 210 20% 85%;
+    --secondary: 100 14% 91%;        /* sage tint */
+    --secondary-foreground: 195 24% 12%;
 
-    --muted: 210 24% 20%;
-    --muted-foreground: 210 12% 55%;
+    --muted: 100 10% 93%;
+    --muted-foreground: 100 8% 42%;
 
-    /* Infoblox light green tint */
-    --accent: 210 28% 18%;
-    --accent-foreground: 210 20% 85%;
+    --accent: 100 14% 88%;
+    --accent-foreground: 195 24% 12%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
@@ -39,31 +38,31 @@
     --success: 144 100% 37%;
     --success-foreground: 0 0% 100%;
 
-    --info: 200 80% 55%;
+    --info: 200 80% 45%;
     --info-foreground: 0 0% 100%;
 
-    --border: 210 20% 20%;
-    --input: 210 20% 20%;
+    --border: 195 15% 88%;           /* #E2E8E8 */
+    --input: 195 15% 88%;
     --ring: 144 100% 37%;
 
-    --radius: 0.625rem;
+    --radius: 0.5rem;
 
-    /* Sidebar — deeper navy */
-    --sidebar-background: 210 40% 7%;
-    --sidebar-foreground: 210 12% 60%;
+    /* Sidebar — sage green #E9EFE6 */
+    --sidebar-background: 100 18% 91%;
+    --sidebar-foreground: 195 24% 12%;
     --sidebar-primary: 144 100% 37%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 36% 14%;
-    --sidebar-accent-foreground: 210 20% 90%;
-    --sidebar-border: 210 24% 15%;
+    --sidebar-accent: 100 14% 84%;   /* #D4DED0 active item */
+    --sidebar-accent-foreground: 195 24% 12%;
+    --sidebar-border: 100 12% 82%;
     --sidebar-ring: 144 100% 37%;
-    --sidebar-muted: 210 10% 45%;
+    --sidebar-muted: 100 8% 42%;     /* #6B7B6E section labels */
 
     /* custom tokens */
-    --surface-raised: 210 32% 16%;
-    --surface-sunken: 210 36% 9%;
-    --infoblox-green-light: 147 100% 90%;
-    --infoblox-green-mid: 147 100% 80%;
+    --surface-raised: 0 0% 100%;
+    --surface-sunken: 100 10% 93%;
+    --infoblox-green-light: 144 60% 90%;
+    --infoblox-green-mid: 144 80% 70%;
   }
 }
 

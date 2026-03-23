@@ -50,12 +50,13 @@ const navSections: NavSection[] = [
 export const AppSidebar = ({ activeView, onNavigate }: Props) => {
   return (
     <aside className="fixed left-0 top-0 bottom-0 w-64 bg-sidebar flex flex-col z-50">
-      {/* Logo */}
-      <div className="flex items-center gap-2 px-6 py-5 border-b border-sidebar-border">
+      {/* Logo — dark header bar matching Infoblox top nav */}
+      <div className="flex items-center gap-3 px-6 py-4 bg-[#172628] border-b border-[#0d1a1c]">
         <InfobloxLogo className="h-5 w-auto text-white" />
-      </div>
-      <div className="px-6 -mt-1 pb-3">
-        <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-primary font-heading">AgentView</p>
+        <div>
+          <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#00BD4D] font-heading leading-none">MAIGE</p>
+          <p className="text-[9px] text-white/50 uppercase tracking-wider leading-none mt-0.5">AI Governance</p>
+        </div>
       </div>
 
       {/* Nav sections */}
@@ -95,11 +96,11 @@ export const AppSidebar = ({ activeView, onNavigate }: Props) => {
       </nav>
 
       {/* Status bar */}
-      <div className="px-5 py-4 border-t border-sidebar-border">
+      <div className="px-5 py-4 border-t border-sidebar-border bg-sidebar">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
           <div className="text-xs">
-            <p className="text-sidebar-accent-foreground font-medium">DNS ingestion live</p>
+            <p className="text-sidebar-foreground font-medium">DNS ingestion live</p>
             <p className="text-sidebar-muted">Last scan: 4 min ago</p>
           </div>
         </div>
