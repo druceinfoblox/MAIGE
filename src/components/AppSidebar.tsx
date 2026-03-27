@@ -22,29 +22,32 @@ export const AppSidebar = ({ activeView, onNavigate }: Props) => {
   const isActive = (view: View) => activeView === view;
   const isClientActive = clientViews.includes(activeView);
 
+  const itemStyle = (active: boolean): React.CSSProperties => ({
+    backgroundColor: active ? '#d0d6d6' : 'transparent',
+    borderLeft: active ? '4px solid #2c3436' : '4px solid transparent',
+    color: active ? '#2b2f31' : '#7e8588',
+    fontWeight: active ? 600 : 400,
+  });
+
   const itemClass = (active: boolean) => cn(
     'w-full flex flex-col items-center justify-center py-2.5 px-1 transition-colors cursor-pointer',
-    active
-      ? 'bg-primary text-white'
-      : 'text-foreground/50 hover:bg-black/5 hover:text-foreground/80'
+    !active && 'hover:bg-[#dde3e3]'
   );
 
   const subItemClass = (active: boolean) => cn(
     'w-full flex flex-col items-center justify-center py-2 px-1 transition-colors cursor-pointer',
-    active
-      ? 'bg-primary text-white'
-      : 'text-foreground/60 hover:bg-black/5 hover:text-foreground/80'
+    !active && 'hover:bg-[#dde3e3]'
   );
 
   return (
     <aside
       className="flex flex-col h-full border-r border-border/50 shrink-0"
-      style={{ backgroundColor: '#E9EFE6', width: '5.5rem' }}
+      style={{ backgroundColor: '#e9ecec', width: '5.5rem' }}
     >
       <nav className="flex-1 flex flex-col items-center py-3 space-y-0.5">
 
         {/* Dashboard */}
-        <button className={itemClass(isActive('dashboard'))} onClick={() => onNavigate('dashboard')}>
+        <button className={itemClass(isActive('dashboard'))} style={itemStyle(isActive('dashboard'))} onClick={() => onNavigate('dashboard')}>
           <LayoutDashboard className="w-5 h-5 mb-1" />
           <span className="text-[10px] leading-tight font-medium">Dashboard</span>
         </button>
@@ -53,6 +56,7 @@ export const AppSidebar = ({ activeView, onNavigate }: Props) => {
         <div className="w-full">
           <button
             className={cn(itemClass(isClientActive && !clientsOpen), 'relative')}
+            style={itemStyle(isClientActive && !clientsOpen)}
             onClick={() => setClientsOpen(!clientsOpen)}
           >
             <Laptop className="w-5 h-5 mb-1" />
@@ -65,11 +69,11 @@ export const AppSidebar = ({ activeView, onNavigate }: Props) => {
 
           {clientsOpen && (
             <div className="w-full border-t border-black/10">
-              <button className={subItemClass(isActive('tools'))} onClick={() => onNavigate('tools')}>
+              <button className={subItemClass(isActive('tools'))} style={itemStyle(isActive('tools'))} onClick={() => onNavigate('tools')}>
                 <Radar className="w-4 h-4 mb-0.5" />
                 <span className="text-[9px] leading-tight font-medium text-center px-1">AI Tools</span>
               </button>
-              <button className={subItemClass(isActive('users'))} onClick={() => onNavigate('users')}>
+              <button className={subItemClass(isActive('users'))} style={itemStyle(isActive('users'))} onClick={() => onNavigate('users')}>
                 <Users className="w-4 h-4 mb-0.5" />
                 <span className="text-[9px] leading-tight font-medium text-center px-1">Users</span>
                 {!isActive('users') && (
@@ -82,13 +86,13 @@ export const AppSidebar = ({ activeView, onNavigate }: Props) => {
         </div>
 
         {/* Servers */}
-        <button className={itemClass(isActive('agents'))} onClick={() => onNavigate('agents')}>
+        <button className={itemClass(isActive('agents'))} style={itemStyle(isActive('agents'))} onClick={() => onNavigate('agents')}>
           <Server className="w-5 h-5 mb-1" />
           <span className="text-[10px] leading-tight font-medium">Servers</span>
         </button>
 
         {/* Exposures */}
-        <button className={cn(itemClass(isActive('exposures')), 'relative')} onClick={() => onNavigate('exposures')}>
+        <button className={cn(itemClass(isActive('exposures')), 'relative')} style={itemStyle(isActive('exposures'))} onClick={() => onNavigate('exposures')}>
           <TriangleAlert className="w-5 h-5 mb-1" />
           <span className="text-[10px] leading-tight font-medium">Exposures</span>
           {!isActive('exposures') && (
@@ -97,19 +101,19 @@ export const AppSidebar = ({ activeView, onNavigate }: Props) => {
         </button>
 
         {/* Inspection */}
-        <button className={itemClass(isActive('inspection'))} onClick={() => onNavigate('inspection')}>
+        <button className={itemClass(isActive('inspection'))} style={itemStyle(isActive('inspection'))} onClick={() => onNavigate('inspection')}>
           <Eye className="w-5 h-5 mb-1" />
           <span className="text-[10px] leading-tight font-medium">Inspection</span>
         </button>
 
         {/* Visualization */}
-        <button className={itemClass(isActive('graph'))} onClick={() => onNavigate('graph')}>
+        <button className={itemClass(isActive('graph'))} style={itemStyle(isActive('graph'))} onClick={() => onNavigate('graph')}>
           <GitBranch className="w-5 h-5 mb-1" />
           <span className="text-[10px] leading-tight font-medium">Visualization</span>
         </button>
 
         {/* Policy */}
-        <button className={cn(itemClass(isActive('policy')), 'relative')} onClick={() => onNavigate('policy')}>
+        <button className={cn(itemClass(isActive('policy')), 'relative')} style={itemStyle(isActive('policy'))} onClick={() => onNavigate('policy')}>
           <ShieldOff className="w-5 h-5 mb-1" />
           <span className="text-[10px] leading-tight font-medium">Policy</span>
           {policyCount > 0 && (

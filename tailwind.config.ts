@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['"Nunito Sans"', 'system-ui', 'sans-serif'],
-        heading: ['"Lato"', 'system-ui', 'sans-serif'],
+        sans: ['"Open Sans"', '"Helvetica Neue"', 'Arial', 'sans-serif'],
+        heading: ['"Open Sans"', '"Helvetica Neue"', 'Arial', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace'],
       },
       colors: {

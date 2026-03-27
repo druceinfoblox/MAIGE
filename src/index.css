@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,300;0,6..12,400;0,6..12,500;0,6..12,600;0,6..12,700;0,6..12,800;1,6..12,400&family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,28 +6,28 @@
 
 @layer base {
   :root {
-    /* Infoblox Lighthouse light theme */
-    --background: 180 8% 96%;        /* #F4F6F6 page bg */
-    --foreground: 195 24% 12%;       /* #172628 dark teal text */
+    /* Infoblox product visual language */
+    --background: 210 7% 96%;        /* #f5f6f7 canvas bg */
+    --foreground: 195 6% 17%;        /* #2b2f31 dark slate text */
 
     --card: 0 0% 100%;               /* white cards */
-    --card-foreground: 195 24% 12%;
+    --card-foreground: 195 6% 17%;   /* #2b2f31 */
 
     --popover: 0 0% 100%;
-    --popover-foreground: 195 24% 12%;
+    --popover-foreground: 195 6% 17%;
 
-    /* Infoblox green #00BD4D → hsl(144, 100%, 37%) */
-    --primary: 144 100% 37%;
+    /* Infoblox blue #2b86c6 → hsl(207, 64%, 47%) */
+    --primary: 207 64% 47%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 100 14% 91%;        /* sage tint */
-    --secondary-foreground: 195 24% 12%;
+    --secondary: 180 4% 92%;         /* cool gray tint */
+    --secondary-foreground: 195 6% 17%;
 
-    --muted: 100 10% 93%;
-    --muted-foreground: 100 8% 42%;
+    --muted: 210 5% 95%;             /* #f2f3f4 input bg */
+    --muted-foreground: 195 4% 51%;  /* #7e8588 */
 
-    --accent: 100 14% 88%;
-    --accent-foreground: 195 24% 12%;
+    --accent: 199 74% 95%;           /* #e8f5fb row hover */
+    --accent-foreground: 195 6% 17%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
@@ -41,26 +41,26 @@
     --info: 200 80% 45%;
     --info-foreground: 0 0% 100%;
 
-    --border: 195 15% 88%;           /* #E2E8E8 */
-    --input: 195 15% 88%;
-    --ring: 144 100% 37%;
+    --border: 192 8% 91%;            /* #e3e7e8 */
+    --input: 192 8% 91%;
+    --ring: 207 54% 77%;             /* #9fc2e8 muted blue */
 
-    --radius: 0.5rem;
+    --radius: 4px;
 
-    /* Sidebar — sage green #E9EFE6 */
-    --sidebar-background: 100 18% 91%;
-    --sidebar-foreground: 195 24% 12%;
-    --sidebar-primary: 144 100% 37%;
+    /* Sidebar — cool light gray #e9ecec */
+    --sidebar-background: 180 4% 92%;
+    --sidebar-foreground: 195 6% 17%;
+    --sidebar-primary: 207 64% 47%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 100 14% 84%;   /* #D4DED0 active item */
-    --sidebar-accent-foreground: 195 24% 12%;
-    --sidebar-border: 100 12% 82%;
-    --sidebar-ring: 144 100% 37%;
-    --sidebar-muted: 100 8% 42%;     /* #6B7B6E section labels */
+    --sidebar-accent: 180 4% 84%;    /* #d0d6d6 active item */
+    --sidebar-accent-foreground: 195 6% 17%;
+    --sidebar-border: 180 4% 86%;
+    --sidebar-ring: 207 64% 47%;
+    --sidebar-muted: 195 4% 51%;     /* #7e8588 muted text */
 
     /* custom tokens */
     --surface-raised: 0 0% 100%;
-    --surface-sunken: 100 10% 93%;
+    --surface-sunken: 210 5% 95%;
     --infoblox-green-light: 144 60% 90%;
     --infoblox-green-mid: 144 80% 70%;
   }
@@ -73,12 +73,13 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Nunito Sans', system-ui, sans-serif;
+    font-family: "Open Sans", "Helvetica Neue", Arial, sans-serif;
+    font-size: 13px;
   }
 
   h1, h2, h3, h4, h5, h6 {
     @apply tracking-tight;
-    font-family: 'Lato', system-ui, sans-serif;
+    font-family: "Open Sans", "Helvetica Neue", Arial, sans-serif;
     text-wrap: balance;
   }
 
@@ -124,4 +125,23 @@
     transform: translateY(0);
     filter: blur(0);
   }
+}
+
+/* Infoblox: flatten overly-rounded shadcn defaults */
+.rounded-xl { border-radius: 4px !important; }
+.rounded-lg { border-radius: 4px !important; }
+.rounded-md { border-radius: 4px !important; }
+
+/* Infoblox: table header style */
+thead th {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #7e8588 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Infoblox: table row hover */
+tbody tr:hover {
+  background-color: #e8f5fb !important;
 }
