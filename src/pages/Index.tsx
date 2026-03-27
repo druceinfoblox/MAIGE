@@ -1,15 +1,17 @@
 import { useState } from 'react';
+import { Sparkles } from 'lucide-react';
 import { AppSidebar } from '@/components/AppSidebar';
 import { DashboardView } from '@/views/DashboardView';
 import { ToolsView } from '@/views/ToolsView';
 import { UsersView } from '@/views/UsersView';
 import { AgentsView } from '@/views/AgentsView';
 import { ExposuresView } from '@/views/ExposuresView';
+import { InspectionView } from '@/views/InspectionView';
 import { GraphView } from '@/views/GraphView';
 import { PolicyView } from '@/views/PolicyView';
 import InfobloxLogo from '@/components/InfobloxLogo';
 
-type View = 'dashboard' | 'tools' | 'users' | 'agents' | 'exposures' | 'graph' | 'policy';
+type View = 'dashboard' | 'tools' | 'users' | 'agents' | 'exposures' | 'inspection' | 'graph' | 'policy';
 
 const viewTitles: Record<View, string> = {
   dashboard: 'Dashboard',
@@ -18,6 +20,7 @@ const viewTitles: Record<View, string> = {
   users: 'User Mapping',
   agents: 'Internal Agents',
   exposures: 'Exposures',
+  inspection: 'Content Inspection',
   policy: 'Policy',
 };
 
@@ -29,7 +32,7 @@ const Index = () => {
   return (
     <div className="flex flex-col h-screen bg-background overflow-hidden">
 
-      {/* Top nav — identical structure to Lighthouse */}
+      {/* Top nav */}
       <nav className="h-14 flex items-center px-4 justify-between sticky top-0 z-50 shrink-0" style={{ backgroundColor: '#172628' }}>
         <div className="flex items-center space-x-3">
           <InfobloxLogo className="h-[22px] w-auto text-white" />
@@ -40,10 +43,17 @@ const Index = () => {
         </div>
         <div className="flex items-center gap-3">
           <span className="text-white/40 text-xs">{viewTitles[activeView]}</span>
+          <button
+            onClick={() => {}}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white bg-green-600 hover:bg-green-700 transition-colors"
+          >
+            <Sparkles size={14} />
+            Ask Infoblox IQ
+          </button>
         </div>
       </nav>
 
-      {/* Mint accent strip — identical to Lighthouse */}
+      {/* Mint accent strip */}
       <div className="h-[3px] shrink-0" style={{ backgroundColor: '#98D7BF' }} />
 
       {/* Body: sidebar + content */}
@@ -60,6 +70,8 @@ const Index = () => {
             <UsersView />
           ) : activeView === 'agents' ? (
             <AgentsView />
+          ) : activeView === 'inspection' ? (
+            <InspectionView />
           ) : activeView === 'policy' ? (
             <PolicyView />
           ) : (
@@ -68,7 +80,7 @@ const Index = () => {
         </main>
       </div>
 
-      {/* Footer — identical to Lighthouse */}
+      {/* Footer */}
       <div className="text-center text-xs text-muted-foreground py-1 border-t border-border bg-card shrink-0">
         Infoblox MAIGE &nbsp;·&nbsp; Managed AI Governance Engine
       </div>

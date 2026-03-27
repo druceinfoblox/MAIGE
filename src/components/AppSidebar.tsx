@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import {
   LayoutDashboard, Laptop, Server, GitBranch,
-  Radar, Users, ChevronDown, ChevronUp, ShieldOff, TriangleAlert,
+  Radar, Users, ChevronDown, ChevronUp, ShieldOff, TriangleAlert, Eye,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { usePolicyStore } from '@/hooks/usePolicyStore';
 
-type View = 'dashboard' | 'tools' | 'users' | 'agents' | 'exposures' | 'graph' | 'policy';
+type View = 'dashboard' | 'tools' | 'users' | 'agents' | 'exposures' | 'inspection' | 'graph' | 'policy';
 
 type Props = {
   activeView: View;
@@ -94,6 +94,12 @@ export const AppSidebar = ({ activeView, onNavigate }: Props) => {
           {!isActive('exposures') && (
             <span className="absolute top-1.5 right-2 inline-flex items-center justify-center w-4 h-4 rounded-full bg-destructive text-white text-[8px] font-bold">3</span>
           )}
+        </button>
+
+        {/* Inspection */}
+        <button className={itemClass(isActive('inspection'))} onClick={() => onNavigate('inspection')}>
+          <Eye className="w-5 h-5 mb-1" />
+          <span className="text-[10px] leading-tight font-medium">Inspection</span>
         </button>
 
         {/* Visualization */}
