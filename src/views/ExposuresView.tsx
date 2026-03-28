@@ -6,14 +6,13 @@ import { SortableHeader, toggleSort, type SortState } from '@/components/Sortabl
 import { ExposureDetailPanel } from '@/components/ExposureDetailPanel';
 import { DigitalRiskDetailPanel } from '@/components/DigitalRiskDetailPanel';
 import { AttackSurfaceDetailPanel } from '@/components/AttackSurfaceDetailPanel';
-import { RuntimeAlertDetailPanel } from '@/components/RuntimeAlertDetailPanel';
 import { BlockButton, BlockedBadge } from '@/components/BlockButton';
 import {
-  externalExposures, attackSurfaceItems, digitalRiskItems, runtimeAlerts,
-  type ExternalExposure, type DigitalRiskItem, type AttackSurfaceItem, type RuntimeAlert,
+  externalExposures, attackSurfaceItems, digitalRiskItems,
+  type ExternalExposure, type DigitalRiskItem, type AttackSurfaceItem,
 } from '@/data/mock';
 
-type ExposureTab = 'endpoints' | 'attack-surface' | 'digital-risk' | 'runtime-security';
+type ExposureTab = 'endpoints' | 'attack-surface' | 'digital-risk';
 
 // ── Helpers ──
 
@@ -50,12 +49,6 @@ const drOpen = digitalRiskItems.filter(i => i.status === 'OPEN').length;
 const drInvestigating = digitalRiskItems.filter(i => i.status === 'INVESTIGATING').length;
 const drCritical = digitalRiskItems.filter(i => i.risk === 'Critical').length;
 
-// ── Runtime security metrics ──
-const raTotal = runtimeAlerts.length;
-const raActive = runtimeAlerts.filter(i => i.status === 'ACTIVE').length;
-const raUsersFlagged = new Set(runtimeAlerts.map(i => i.userId)).size;
-const raTacticsDetected = new Set(runtimeAlerts.map(i => i.tacticId)).size;
-
 const typeBadgeVariant = (t: string) => {
   if (t === 'Impersonation') return 'critical' as const;
   if (t === 'Exact Match') return 'warning' as const;
@@ -78,8 +71,6 @@ export const ExposuresView = () => {
   const [selected, setSelected] = useState<ExternalExposure | null>(null);
   const [selectedDR, setSelectedDR] = useState<DigitalRiskItem | null>(null);
   const [selectedAS, setSelectedAS] = useState<AttackSurfaceItem | null>(null);
-  const [selectedRA, setSelectedRA] = useState<RuntimeAlert | null>(null);
-
   const filtered = useMemo(() => {
     let data = externalExposures.filter(exp => {
       const matchesSearch = !search || exp.domain.toLowerCase().includes(search.toLowerCase()) || exp.endpoint.toLowerCase().includes(search.toLowerCase());
@@ -122,7 +113,6 @@ export const ExposuresView = () => {
         {tabBtn('endpoints', 'Exposed Endpoints', externalExposures.length)}
         {tabBtn('attack-surface', 'Attack Surface', attackSurfaceItems.length)}
         {tabBtn('digital-risk', 'Digital Risk', digitalRiskItems.length)}
-        {tabBtn('runtime-security', 'Runtime Security', runtimeAlerts.length)}
       </div>
 
       {/* ── Tab 1: Exposed Endpoints ── */}
@@ -408,83 +398,6 @@ export const ExposuresView = () => {
         </>
       )}
 
-      {/* ── Tab 4: Runtime Security ── */}
-      {activeTab === 'runtime-security' && (
-        <>
-          <div>
-            <h2 className="text-2xl font-semibold text-foreground">Runtime Security</h2>
-            <p className="text-sm text-muted-foreground mt-1">Active alerts from internal users attempting prompt injection and obfuscation tactics</p>
-          </div>
-
-          <ScrollReveal>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
-                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-1">Total Alerts</p>
-                <p className="text-2xl font-bold text-foreground">{raTotal}</p>
-              </div>
-              <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
-                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-1">Active</p>
-                <p className="text-2xl font-bold text-destructive">{raActive}</p>
-              </div>
-              <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
-                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-1">Users Flagged</p>
-                <p className="text-2xl font-bold text-amber-600">{raUsersFlagged}</p>
-              </div>
-              <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
-                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-1">Tactics Detected</p>
-                <p className="text-2xl font-bold text-foreground">{raTacticsDetected}</p>
-              </div>
-            </div>
-          </ScrollReveal>
-
-          <ScrollReveal delay={0.05}>
-            <div className="bg-card rounded-xl border border-border shadow-card overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-border bg-accent/50">
-                      <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">User</th>
-                      <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Department</th>
-                      <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Tactic</th>
-                      <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Tool</th>
-                      <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Severity</th>
-                      <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Timestamp</th>
-                      <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {runtimeAlerts.map((alert) => (
-                      <tr key={alert.id} onClick={() => setSelectedRA(alert)} className="border-b border-border last:border-0 hover:bg-accent/30 transition-colors cursor-pointer">
-                        <td className="px-5 py-3.5 font-mono text-xs text-card-foreground">{alert.userName}</td>
-                        <td className="px-5 py-3.5 text-muted-foreground">{alert.department}</td>
-                        <td className="px-5 py-3.5">
-                          <div className="flex flex-col gap-0.5">
-                            <span className="text-[10px] font-mono text-muted-foreground">{alert.tacticId}</span>
-                            <span className="text-xs text-card-foreground font-medium">{alert.tacticName}</span>
-                          </div>
-                        </td>
-                        <td className="px-5 py-3.5 text-muted-foreground">{alert.tool}</td>
-                        <td className="px-5 py-3.5">
-                          <StatusBadge status={alert.severity} variant={riskVariant(alert.severity)} />
-                        </td>
-                        <td className="px-5 py-3.5 text-muted-foreground text-xs">{new Date(alert.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</td>
-                        <td className="px-5 py-3.5">
-                          <StatusBadge status={alert.status} variant={statusBadgeVariant(alert.status)} />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <div className="px-5 py-2.5 border-t border-border text-xs text-muted-foreground">
-                Showing {runtimeAlerts.length} runtime security alerts
-              </div>
-            </div>
-          </ScrollReveal>
-
-          <RuntimeAlertDetailPanel alert={selectedRA} onClose={() => setSelectedRA(null)} />
-        </>
-      )}
     </div>
   );
 };

@@ -1,23 +1,37 @@
 import { useState } from 'react';
-import { Eye, ChevronDown, ChevronRight } from 'lucide-react';
 import { ScrollReveal } from '@/components/ScrollReveal';
-import { inspectionPolicies } from '@/data/mock';
+import { StatusBadge } from '@/components/StatusBadge';
+import { RuntimeAlertDetailPanel } from '@/components/RuntimeAlertDetailPanel';
+import { runtimeAlerts, type RuntimeAlert } from '@/data/mock';
+
+const riskVariant = (r: string) => {
+  const l = r.toLowerCase();
+  if (l === 'critical') return 'critical' as const;
+  if (l === 'high') return 'warning' as const;
+  return 'neutral' as const;
+};
+
+const statusBadgeVariant = (s: string) => {
+  if (s === 'ACTIVE') return 'critical' as const;
+  if (s === 'REVIEWING') return 'warning' as const;
+  if (s === 'RESOLVED') return 'success' as const;
+  return 'neutral' as const;
+};
+
+const totalAlerts = runtimeAlerts.length;
+const activeAlerts = runtimeAlerts.filter(a => a.status === 'ACTIVE').length;
+const usersFlagged = new Set(runtimeAlerts.map(a => a.userId)).size;
+const tacticsDetected = new Set(runtimeAlerts.map(a => a.tacticId)).size;
 
 export const InspectionView = () => {
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-
-  const totalFindings = inspectionPolicies.reduce((s, p) => s + p.findings, 0);
-  const criticalHigh = 7; // static per spec
-  const blocked = 6;      // static per spec
-
-  const toggle = (id: string) => setExpandedId(prev => (prev === id ? null : id));
+  const [selectedRA, setSelectedRA] = useState<RuntimeAlert | null>(null);
 
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-semibold text-foreground">Content Inspection</h2>
         <p className="text-sm text-muted-foreground mt-1">
-          Inspect AI traffic for sensitive data, credentials, source code, and customer information
+          Active alerts from internal users attempting prompt injection and obfuscation tactics
         </p>
       </div>
 
@@ -25,76 +39,71 @@ export const InspectionView = () => {
       <ScrollReveal>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
-            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-1">Active Policies</p>
-            <p className="text-2xl font-bold text-foreground">3</p>
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-1">Total Alerts</p>
+            <p className="text-2xl font-bold text-foreground">{totalAlerts}</p>
           </div>
           <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
-            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-1">Total Findings</p>
-            <p className="text-2xl font-bold text-foreground">{totalFindings}</p>
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-1">Active</p>
+            <p className="text-2xl font-bold text-destructive">{activeAlerts}</p>
           </div>
           <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
-            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-1">Critical / High</p>
-            <p className="text-2xl font-bold text-destructive">{criticalHigh}</p>
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-1">Users Flagged</p>
+            <p className="text-2xl font-bold text-amber-600">{usersFlagged}</p>
           </div>
           <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
-            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-1">Blocked</p>
-            <p className="text-2xl font-bold text-foreground">{blocked}</p>
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-1">Tactics Detected</p>
+            <p className="text-2xl font-bold text-foreground">{tacticsDetected}</p>
           </div>
         </div>
       </ScrollReveal>
 
-      {/* Active Inspection Policies */}
+      {/* Runtime alerts table */}
       <ScrollReveal delay={0.05}>
-        <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <Eye className="w-5 h-5 text-green-600" />
-            <h3 className="text-lg font-semibold text-foreground">Active Inspection Policies</h3>
+        <div className="bg-card rounded-xl border border-border shadow-card overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border bg-accent/50">
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">User</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Department</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Tactic</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Tool</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Severity</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Timestamp</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {runtimeAlerts.map((alert) => (
+                  <tr key={alert.id} onClick={() => setSelectedRA(alert)} className="border-b border-border last:border-0 hover:bg-accent/30 transition-colors cursor-pointer">
+                    <td className="px-5 py-3.5 font-mono text-xs text-card-foreground">{alert.userName}</td>
+                    <td className="px-5 py-3.5 text-muted-foreground">{alert.department}</td>
+                    <td className="px-5 py-3.5">
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-[10px] font-mono text-muted-foreground">{alert.tacticId}</span>
+                        <span className="text-xs text-card-foreground font-medium">{alert.tacticName}</span>
+                      </div>
+                    </td>
+                    <td className="px-5 py-3.5 text-muted-foreground">{alert.tool}</td>
+                    <td className="px-5 py-3.5">
+                      <StatusBadge status={alert.severity} variant={riskVariant(alert.severity)} />
+                    </td>
+                    <td className="px-5 py-3.5 text-muted-foreground text-xs">{new Date(alert.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</td>
+                    <td className="px-5 py-3.5">
+                      <StatusBadge status={alert.status} variant={statusBadgeVariant(alert.status)} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-
-          <div className="bg-card rounded-xl border border-border shadow-sm divide-y divide-border overflow-hidden">
-            {inspectionPolicies.map((policy) => {
-              const isOpen = expandedId === policy.id;
-              return (
-                <div key={policy.id}>
-                  {/* Row */}
-                  <button
-                    onClick={() => toggle(policy.id)}
-                    className="w-full flex items-center gap-3 px-5 py-4 text-left hover:bg-accent/30 transition-colors"
-                  >
-                    {isOpen
-                      ? <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />
-                      : <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
-                    }
-                    <span className="font-semibold text-sm text-foreground flex-1">{policy.name}</span>
-                    <span
-                      className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide ${
-                        policy.type === 'TOOL'
-                          ? 'bg-blue-500/15 text-blue-600'
-                          : 'bg-purple-500/15 text-purple-700'
-                      }`}
-                    >
-                      {policy.type}
-                    </span>
-                    <span className="text-xs text-muted-foreground">{policy.findings} findings</span>
-                    <span className="w-2.5 h-2.5 rounded-full bg-green-500 shrink-0" />
-                  </button>
-
-                  {/* Expanded details */}
-                  {isOpen && (
-                    <div className="px-5 pb-4 pl-12 flex items-center gap-6 text-xs text-muted-foreground">
-                      <span>Created: {policy.created}</span>
-                      <span>Last Finding: {policy.lastFinding}</span>
-                      <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-success/15 text-success uppercase tracking-wide">
-                        enabled
-                      </span>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+          <div className="px-5 py-2.5 border-t border-border text-xs text-muted-foreground">
+            Showing {runtimeAlerts.length} runtime security alerts
           </div>
         </div>
       </ScrollReveal>
+
+      <RuntimeAlertDetailPanel alert={selectedRA} onClose={() => setSelectedRA(null)} />
     </div>
   );
 };
