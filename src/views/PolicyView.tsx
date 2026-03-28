@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { ShieldOff, Shield, Trash2, ShieldCheck } from 'lucide-react';
+import { ShieldOff, Shield, Trash2, ShieldCheck, Plus, Pencil } from 'lucide-react';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import { StatusBadge } from '@/components/StatusBadge';
 import { usePolicyStore, type EntityType } from '@/hooks/usePolicyStore';
+import { usePromptPolicyStore, type PromptPolicy } from '@/hooks/usePromptPolicyStore';
+import { PromptPolicyDialog } from '@/components/PromptPolicyDialog';
 import { ToolDetailPanel } from '@/components/ToolDetailPanel';
 import { UserDetailPanel } from '@/components/UserDetailPanel';
 import { AgentDetailPanel } from '@/components/AgentDetailPanel';
@@ -109,7 +111,10 @@ const complianceBarColor: Record<string, string> = {
 export const PolicyView = () => {
   const [activeTab, setActiveTab] = useState<PolicyTab>('governance');
   const { rules, remove } = usePolicyStore();
+  const { policies: promptPolicies, add: addPromptPolicy, update: updatePromptPolicy, remove: removePromptPolicy } = usePromptPolicyStore();
   const [panel, setPanel] = useState<PanelState>(null);
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [editTarget, setEditTarget] = useState<PromptPolicy | null>(null);
 
   const sorted = [...rules].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -304,13 +309,72 @@ export const PolicyView = () => {
         </ScrollReveal>
       )}
 
+      {/* ── Prompt Policies section ── */}
+      <ScrollReveal delay={0.05}>
+        <div className="space-y-3">
+          <h3 className="text-base font-semibold text-foreground">Prompt Policies</h3>
+          {promptPolicies.length === 0 ? (
+            <p className="text-sm text-muted-foreground italic">No prompt policies yet</p>
+          ) : (
+            <div className="space-y-2">
+              {promptPolicies.map(pp => (
+                <div key={pp.id} className="bg-card rounded-xl border border-border p-4 shadow-sm flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <span className="font-semibold text-sm text-foreground">{pp.name}</span>
+                      <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-primary/10 text-primary">
+                        {pp.redactList.length} {pp.redactList.length === 1 ? 'type' : 'types'}
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                      {pp.redactList.slice(0, 4).map(dt => (
+                        <span key={dt} className="bg-muted text-muted-foreground rounded px-1.5 py-0.5 text-[10px] font-mono">
+                          {dt}
+                        </span>
+                      ))}
+                      {pp.redactList.length > 4 && (
+                        <span className="text-[10px] text-muted-foreground font-medium">+{pp.redactList.length - 4} more</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button
+                      onClick={() => setEditTarget(pp)}
+                      title="Edit policy"
+                      className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors border border-transparent hover:border-primary/20"
+                    >
+                      <Pencil size={12} />
+                    </button>
+                    <button
+                      onClick={() => removePromptPolicy(pp.id)}
+                      title="Delete policy"
+                      className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors border border-transparent hover:border-destructive/20"
+                    >
+                      <Trash2 size={12} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </ScrollReveal>
+
       {/* ── Blocked Entities section (always visible below tabs) ── */}
       <ScrollReveal delay={0.1}>
         <div className="space-y-3">
-          <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-            <ShieldOff size={18} className="text-destructive" />
-            Blocked Entities
-          </h3>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+              <ShieldOff size={18} className="text-destructive" />
+              Blocked Entities
+            </h3>
+            <button
+              onClick={() => setAddDialogOpen(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold border border-[#9fc2e8] text-[#2b86c6] bg-transparent hover:border-[#3a8ecf] hover:bg-[#e8f5fb] transition-colors"
+            >
+              <Plus size={13} /> Add Prompt Policy
+            </button>
+          </div>
 
           {sorted.length === 0 ? (
             <div className="bg-card rounded-xl border border-border shadow-sm flex flex-col items-center justify-center py-16 px-8 text-center">
@@ -398,6 +462,27 @@ export const PolicyView = () => {
       )}
       {panel?.kind === 'exposure' && (
         <ExposureDetailPanel exposure={panel.entity} onClose={() => setPanel(null)} />
+      )}
+
+      {/* Prompt Policy dialogs */}
+      <PromptPolicyDialog
+        open={addDialogOpen}
+        onClose={() => setAddDialogOpen(false)}
+        onSave={(name, redactList) => {
+          addPromptPolicy(name, redactList);
+          setAddDialogOpen(false);
+        }}
+      />
+      {editTarget && (
+        <PromptPolicyDialog
+          open={true}
+          onClose={() => setEditTarget(null)}
+          onSave={(name, redactList) => {
+            updatePromptPolicy(editTarget.id, name, redactList);
+            setEditTarget(null);
+          }}
+          initial={{ name: editTarget.name, redactList: editTarget.redactList }}
+        />
       )}
     </div>
   );
