@@ -2,11 +2,12 @@ import { useState, useRef, useCallback } from 'react';
 import {
   LayoutDashboard, Search, Shield, Radar,
   Users, GitBranch, ShieldOff, MessageSquare,
-  Eye, TriangleAlert, Globe,
+  Eye, TriangleAlert, Globe, LifeBuoy,
+  Database, ShieldCheck,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-type View = 'dashboard' | 'tools' | 'users' | 'graph' | 'ai-traffic-policy' | 'ai-prompt-policies' | 'content-inspection' | 'easm' | 'drp';
+type View = 'dashboard' | 'tools' | 'users' | 'graph' | 'ai-traffic-policy' | 'ai-prompt-policies' | 'content-inspection' | 'easm' | 'drp' | 'agent-registry' | 'agent-trust-policy';
 
 type Props = {
   activeView: View;
@@ -56,6 +57,7 @@ const CLOSE_DELAY = 150;
 
 export const AppSidebar = ({ activeView, onNavigate }: Props) => {
   const [openGroup, setOpenGroup] = useState<string | null>(null);
+  const [dnsAidEnabled, setDnsAidEnabled] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const railItemRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
@@ -161,6 +163,22 @@ export const AppSidebar = ({ activeView, onNavigate }: Props) => {
           })}
         </nav>
 
+        {/* DNS AID toggle */}
+        <button
+          className="flex flex-col items-center justify-center w-full border-l-4 border-transparent transition-colors"
+          style={{
+            height: 56,
+            backgroundColor: dnsAidEnabled ? 'rgba(22,163,74,0.10)' : 'transparent',
+            color: dnsAidEnabled ? '#16a34a' : '#7e8588',
+          }}
+          onClick={() => setDnsAidEnabled(prev => !prev)}
+        >
+          <LifeBuoy className="w-5 h-5" style={{ color: 'inherit' }} />
+          <span className="text-[8px] leading-tight text-center mt-0.5" style={{ color: 'inherit' }}>
+            {dnsAidEnabled ? 'DNS AID ON' : 'DNS AID OFF'}
+          </span>
+        </button>
+
         {/* DNS live indicator at bottom of rail */}
         <div className="flex flex-col items-center pb-4 pt-2 border-t border-black/10">
           <span className="w-2 h-2 rounded-full bg-primary animate-pulse mb-1" />
@@ -171,6 +189,15 @@ export const AppSidebar = ({ activeView, onNavigate }: Props) => {
       {/* Flyout panels — fixed positioned, overlay on content */}
       {navGroups.map(group => {
         if (openGroup !== group.id) return null;
+
+        // Inject DNS AID items into GOVERN flyout when enabled
+        const flyoutItems = group.id === 'govern' && dnsAidEnabled
+          ? [
+              ...group.items,
+              { view: 'agent-registry' as View, icon: Database, label: 'Agent Registry' },
+              { view: 'agent-trust-policy' as View, icon: ShieldCheck, label: 'Agent Trust Policy' },
+            ]
+          : group.items;
 
         return (
           <div
@@ -200,7 +227,7 @@ export const AppSidebar = ({ activeView, onNavigate }: Props) => {
 
             {/* Sub-items */}
             <div style={{ backgroundColor: '#d7e3e6' }}>
-              {group.items.map((item, idx) => {
+              {flyoutItems.map((item, idx) => {
                 const SubIcon = item.icon;
                 const active = activeView === item.view;
 
@@ -220,7 +247,7 @@ export const AppSidebar = ({ activeView, onNavigate }: Props) => {
                       paddingRight: 16,
                       fontSize: 13,
                       color: '#263238',
-                      borderBottom: idx < group.items.length - 1 ? '1px solid #d0d6d6' : undefined,
+                      borderBottom: idx < flyoutItems.length - 1 ? '1px solid #d0d6d6' : undefined,
                     }}
                     onClick={() => handleSubItemClick(item.view)}
                   >

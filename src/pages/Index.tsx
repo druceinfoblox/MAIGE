@@ -10,9 +10,11 @@ import { AIPromptPoliciesView } from '@/views/AIPromptPoliciesView';
 import { InspectionView } from '@/views/InspectionView';
 import { EASMView } from '@/views/EASMView';
 import { DRPView } from '@/views/DRPView';
+import { AgentRegistryView } from '@/views/AgentRegistryView';
+import { AgentTrustPolicyView } from '@/views/AgentTrustPolicyView';
 import InfobloxLogo from '@/components/InfobloxLogo';
 
-type View = 'dashboard' | 'tools' | 'users' | 'graph' | 'ai-traffic-policy' | 'ai-prompt-policies' | 'content-inspection' | 'easm' | 'drp';
+type View = 'dashboard' | 'tools' | 'users' | 'graph' | 'ai-traffic-policy' | 'ai-prompt-policies' | 'content-inspection' | 'easm' | 'drp' | 'agent-registry' | 'agent-trust-policy';
 
 const viewTitles: Record<View, string> = {
   dashboard: 'Dashboard',
@@ -24,6 +26,8 @@ const viewTitles: Record<View, string> = {
   'content-inspection': 'Content Inspection',
   easm: 'EASM — AI Attack Surface',
   drp: 'DRP — Digital Risk',
+  'agent-registry': 'Agent Registry',
+  'agent-trust-policy': 'Agent Trust Policy',
 };
 
 export type { View };
@@ -80,6 +84,10 @@ const Index = () => {
             <EASMView />
           ) : activeView === 'drp' ? (
             <DRPView />
+          ) : activeView === 'agent-registry' ? (
+            <AgentRegistryView />
+          ) : activeView === 'agent-trust-policy' ? (
+            <AgentTrustPolicyView />
           ) : null}
         </main>
       </div>
