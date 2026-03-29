@@ -55,7 +55,7 @@ const insights: { icon: typeof AlertOctagon; iconColor: string; borderColor: str
     borderColor: 'border-destructive/40',
     bgColor: 'bg-destructive/8',
     text: '1 public MCP endpoint exposed — mcp.acme.com is unauthenticated and internet-facing.',
-    navigateTo: 'exposures',
+    navigateTo: 'ai-prompt-policies',
   },
   {
     icon: AlertTriangle,
@@ -71,7 +71,7 @@ const insights: { icon: typeof AlertOctagon; iconColor: string; borderColor: str
     borderColor: 'border-warning/30',
     bgColor: 'bg-warning/5',
     text: '2 internal agent services unclassified — agent-gw.corp and llm-proxy.internal.',
-    navigateTo: 'agents',
+    navigateTo: 'ai-traffic-policy',
   },
   {
     icon: Info,
@@ -116,8 +116,8 @@ export const DashboardView = ({ onNavigate }: { onNavigate: (view: View) => void
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
         <MetricCard label="AI Tools Detected" value={34} icon={<Radar size={20} />} change="+6 new this week" delay={0} onClick={() => onNavigate('tools')} />
         <MetricCard label="Users with AI Activity" value={218} icon={<Users size={20} />} change="67% of org" delay={0.07} onClick={() => onNavigate('users')} />
-        <MetricCard label="Internal Agents" value={11} icon={<Server size={20} />} change="+2 unclassified" variant="warning" delay={0.14} onClick={() => onNavigate('agents')} />
-        <MetricCard label="External Exposures" value={summaryMetrics.externalExposures} icon={<Globe size={20} />} change="1 critical" variant="critical" delay={0.21} onClick={() => onNavigate('exposures')} />
+        <MetricCard label="Internal Agents" value={11} icon={<Server size={20} />} change="+2 unclassified" variant="warning" delay={0.14} onClick={() => onNavigate('ai-traffic-policy')} />
+        <MetricCard label="External Exposures" value={summaryMetrics.externalExposures} icon={<Globe size={20} />} change="1 critical" variant="critical" delay={0.21} onClick={() => onNavigate('easm')} />
       </div>
 
       {/* Insights + Top Tools side by side */}

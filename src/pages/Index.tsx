@@ -4,24 +4,26 @@ import { AppSidebar } from '@/components/AppSidebar';
 import { DashboardView } from '@/views/DashboardView';
 import { ToolsView } from '@/views/ToolsView';
 import { UsersView } from '@/views/UsersView';
-import { AgentsView } from '@/views/AgentsView';
-import { ExposuresView } from '@/views/ExposuresView';
-import { InspectionView } from '@/views/InspectionView';
 import { GraphView } from '@/views/GraphView';
-import { PolicyView } from '@/views/PolicyView';
+import { AITrafficPolicyView } from '@/views/AITrafficPolicyView';
+import { AIPromptPoliciesView } from '@/views/AIPromptPoliciesView';
+import { InspectionView } from '@/views/InspectionView';
+import { EASMView } from '@/views/EASMView';
+import { DRPView } from '@/views/DRPView';
 import InfobloxLogo from '@/components/InfobloxLogo';
 
-type View = 'dashboard' | 'tools' | 'users' | 'agents' | 'exposures' | 'inspection' | 'graph' | 'policy';
+type View = 'dashboard' | 'tools' | 'users' | 'graph' | 'ai-traffic-policy' | 'ai-prompt-policies' | 'content-inspection' | 'easm' | 'drp';
 
 const viewTitles: Record<View, string> = {
   dashboard: 'Dashboard',
-  graph: 'Asset Graph',
   tools: 'AI Tool Inventory',
   users: 'User Mapping',
-  agents: 'Internal Agents',
-  exposures: 'Exposures',
-  inspection: 'Content Inspection',
-  policy: 'Policy',
+  graph: 'AI Asset Graph',
+  'ai-traffic-policy': 'AI Traffic Policy',
+  'ai-prompt-policies': 'AI Prompt Policies',
+  'content-inspection': 'Content Inspection',
+  easm: 'EASM — AI Attack Surface',
+  drp: 'DRP — Digital Risk',
 };
 
 export type { View };
@@ -62,21 +64,23 @@ const Index = () => {
         <main className="flex-1 overflow-y-auto bg-background p-6">
           {activeView === 'dashboard' ? (
             <DashboardView onNavigate={setActiveView} />
-          ) : activeView === 'graph' ? (
-            <GraphView />
           ) : activeView === 'tools' ? (
             <ToolsView />
           ) : activeView === 'users' ? (
             <UsersView />
-          ) : activeView === 'agents' ? (
-            <AgentsView />
-          ) : activeView === 'inspection' ? (
+          ) : activeView === 'graph' ? (
+            <GraphView />
+          ) : activeView === 'ai-traffic-policy' ? (
+            <AITrafficPolicyView />
+          ) : activeView === 'ai-prompt-policies' ? (
+            <AIPromptPoliciesView />
+          ) : activeView === 'content-inspection' ? (
             <InspectionView />
-          ) : activeView === 'policy' ? (
-            <PolicyView />
-          ) : (
-            <ExposuresView />
-          )}
+          ) : activeView === 'easm' ? (
+            <EASMView />
+          ) : activeView === 'drp' ? (
+            <DRPView />
+          ) : null}
         </main>
       </div>
 

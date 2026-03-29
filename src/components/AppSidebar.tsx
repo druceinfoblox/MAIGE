@@ -1,128 +1,131 @@
 import { useState } from 'react';
 import {
-  LayoutDashboard, Laptop, Server, GitBranch,
-  Radar, Users, ChevronDown, ChevronUp, ShieldOff, TriangleAlert, Eye,
+  LayoutDashboard, Radar, Users, GitBranch,
+  ShieldAlert, FileText, Eye, Globe, ShieldOff,
+  ChevronDown, ChevronRight,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { usePolicyStore } from '@/hooks/usePolicyStore';
 
-type View = 'dashboard' | 'tools' | 'users' | 'agents' | 'exposures' | 'inspection' | 'graph' | 'policy';
+type View = 'dashboard' | 'tools' | 'users' | 'graph' | 'ai-traffic-policy' | 'ai-prompt-policies' | 'content-inspection' | 'easm' | 'drp';
 
 type Props = {
   activeView: View;
   onNavigate: (view: View) => void;
 };
 
-const clientViews: View[] = ['tools', 'users'];
+type NavGroup = {
+  label: string;
+  items: { view: View; icon: React.ElementType; label: string }[];
+};
+
+const navGroups: NavGroup[] = [
+  {
+    label: 'DISCOVER',
+    items: [
+      { view: 'tools', icon: Radar, label: 'AI Tools' },
+      { view: 'users', icon: Users, label: 'Users' },
+      { view: 'graph', icon: GitBranch, label: 'AI Asset Graph' },
+    ],
+  },
+  {
+    label: 'GOVERN',
+    items: [
+      { view: 'ai-traffic-policy', icon: ShieldAlert, label: 'AI Traffic Policy' },
+      { view: 'ai-prompt-policies', icon: FileText, label: 'AI Prompt Policies' },
+      { view: 'content-inspection', icon: Eye, label: 'Content Inspection' },
+    ],
+  },
+  {
+    label: 'PREEMPT',
+    items: [
+      { view: 'easm', icon: Globe, label: 'EASM' },
+      { view: 'drp', icon: ShieldOff, label: 'DRP — Digital Risk' },
+    ],
+  },
+];
 
 export const AppSidebar = ({ activeView, onNavigate }: Props) => {
-  const [clientsOpen, setClientsOpen] = useState(clientViews.includes(activeView));
-  const { count: policyCount } = usePolicyStore();
+  // All groups start expanded
+  const [expanded, setExpanded] = useState<Record<string, boolean>>(() =>
+    Object.fromEntries(navGroups.map(g => [g.label, true]))
+  );
+
+  const toggle = (label: string) =>
+    setExpanded(prev => ({ ...prev, [label]: !prev[label] }));
 
   const isActive = (view: View) => activeView === view;
-  const isClientActive = clientViews.includes(activeView);
-
-  const itemStyle = (active: boolean): React.CSSProperties => ({
-    backgroundColor: active ? '#d0d6d6' : 'transparent',
-    borderLeft: active ? '4px solid #2c3436' : '4px solid transparent',
-    color: active ? '#2b2f31' : '#7e8588',
-    fontWeight: active ? 600 : 400,
-  });
-
-  const itemClass = (active: boolean) => cn(
-    'w-full flex flex-col items-center justify-center py-2.5 px-1 transition-colors cursor-pointer',
-    !active && 'hover:bg-[#dde3e3]'
-  );
-
-  const subItemClass = (active: boolean) => cn(
-    'w-full flex flex-col items-center justify-center py-2 px-1 transition-colors cursor-pointer',
-    !active && 'hover:bg-[#dde3e3]'
-  );
 
   return (
     <aside
-      className="flex flex-col h-full border-r border-border/50 shrink-0"
-      style={{ backgroundColor: '#e9ecec', width: '5.5rem' }}
+      className="flex flex-col h-full border-r border-border/50 shrink-0 select-none"
+      style={{ backgroundColor: '#e9ecec', width: '13rem' }}
     >
-      <nav className="flex-1 flex flex-col items-center py-3 space-y-0.5">
+      <nav className="flex-1 flex flex-col py-3 overflow-y-auto">
 
-        {/* Dashboard */}
-        <button className={itemClass(isActive('dashboard'))} style={itemStyle(isActive('dashboard'))} onClick={() => onNavigate('dashboard')}>
-          <LayoutDashboard className="w-5 h-5 mb-1" />
-          <span className="text-[10px] leading-tight font-medium">Dashboard</span>
+        {/* Dashboard — standalone */}
+        <button
+          className={cn(
+            'flex items-center gap-2.5 px-4 py-2.5 text-sm transition-colors cursor-pointer',
+            isActive('dashboard')
+              ? 'bg-[#d0d6d6] border-l-[3px] border-[#2c3436] text-[#2b2f31] font-semibold'
+              : 'border-l-[3px] border-transparent text-[#7e8588] hover:bg-[#dde3e3]',
+          )}
+          onClick={() => onNavigate('dashboard')}
+        >
+          <LayoutDashboard className="w-[18px] h-[18px] shrink-0" />
+          <span>Dashboard</span>
         </button>
 
-        {/* Clients — collapsible group */}
-        <div className="w-full">
-          <button
-            className={cn(itemClass(isClientActive && !clientsOpen), 'relative')}
-            style={itemStyle(isClientActive && !clientsOpen)}
-            onClick={() => setClientsOpen(!clientsOpen)}
-          >
-            <Laptop className="w-5 h-5 mb-1" />
-            <span className="text-[10px] leading-tight font-medium">Clients</span>
-            {clientsOpen
-              ? <ChevronUp className="w-3 h-3 absolute bottom-1 right-2 opacity-40" />
-              : <ChevronDown className="w-3 h-3 absolute bottom-1 right-2 opacity-40" />
-            }
-          </button>
+        {/* Collapsible groups */}
+        {navGroups.map(group => {
+          const open = expanded[group.label];
+          const groupActive = group.items.some(i => isActive(i.view));
 
-          {clientsOpen && (
-            <div className="w-full border-t border-black/10">
-              <button className={subItemClass(isActive('tools'))} style={itemStyle(isActive('tools'))} onClick={() => onNavigate('tools')}>
-                <Radar className="w-4 h-4 mb-0.5" />
-                <span className="text-[9px] leading-tight font-medium text-center px-1">AI Tools</span>
-              </button>
-              <button className={subItemClass(isActive('users'))} style={itemStyle(isActive('users'))} onClick={() => onNavigate('users')}>
-                <Users className="w-4 h-4 mb-0.5" />
-                <span className="text-[9px] leading-tight font-medium text-center px-1">Users</span>
-                {!isActive('users') && (
-                  <span className="mt-0.5 inline-flex items-center justify-center w-4 h-4 rounded-full bg-warning text-white text-[8px] font-bold">12</span>
+          return (
+            <div key={group.label} className="mt-3">
+              {/* Group header */}
+              <button
+                onClick={() => toggle(group.label)}
+                className={cn(
+                  'w-full flex items-center justify-between px-4 py-1.5 cursor-pointer',
+                  'text-[10px] font-bold uppercase tracking-[0.08em] transition-colors',
+                  groupActive ? 'text-[#2b2f31]' : 'text-[#7e8588] hover:text-[#4a5053]',
                 )}
+              >
+                <span>{group.label}</span>
+                {open
+                  ? <ChevronDown className="w-3 h-3 opacity-50" />
+                  : <ChevronRight className="w-3 h-3 opacity-50" />
+                }
               </button>
-              <div className="border-t border-black/10" />
+
+              {/* Sub-items */}
+              {open && (
+                <div className="mt-0.5">
+                  {group.items.map(item => {
+                    const active = isActive(item.view);
+                    const Icon = item.icon;
+                    return (
+                      <button
+                        key={item.view}
+                        className={cn(
+                          'w-full flex items-center gap-2.5 pl-6 pr-4 py-2 text-[13px] transition-colors cursor-pointer',
+                          active
+                            ? 'bg-[#d0d6d6] border-l-[3px] border-[#2c3436] text-[#2b2f31] font-semibold'
+                            : 'border-l-[3px] border-transparent text-[#7e8588] hover:bg-[#dde3e3]',
+                        )}
+                        onClick={() => onNavigate(item.view)}
+                      >
+                        <Icon className="w-4 h-4 shrink-0" />
+                        <span className="truncate">{item.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
-          )}
-        </div>
-
-        {/* Servers */}
-        <button className={itemClass(isActive('agents'))} style={itemStyle(isActive('agents'))} onClick={() => onNavigate('agents')}>
-          <Server className="w-5 h-5 mb-1" />
-          <span className="text-[10px] leading-tight font-medium">Servers</span>
-        </button>
-
-        {/* Exposures */}
-        <button className={cn(itemClass(isActive('exposures')), 'relative')} style={itemStyle(isActive('exposures'))} onClick={() => onNavigate('exposures')}>
-          <TriangleAlert className="w-5 h-5 mb-1" />
-          <span className="text-[10px] leading-tight font-medium">Exposures</span>
-          {!isActive('exposures') && (
-            <span className="absolute top-1.5 right-2 inline-flex items-center justify-center w-4 h-4 rounded-full bg-destructive text-white text-[8px] font-bold">3</span>
-          )}
-        </button>
-
-        {/* Inspection */}
-        <button className={itemClass(isActive('inspection'))} style={itemStyle(isActive('inspection'))} onClick={() => onNavigate('inspection')}>
-          <Eye className="w-5 h-5 mb-1" />
-          <span className="text-[10px] leading-tight font-medium">Inspection</span>
-        </button>
-
-        {/* Visualization */}
-        <button className={itemClass(isActive('graph'))} style={itemStyle(isActive('graph'))} onClick={() => onNavigate('graph')}>
-          <GitBranch className="w-5 h-5 mb-1" />
-          <span className="text-[10px] leading-tight font-medium">Visualization</span>
-        </button>
-
-        {/* Policy */}
-        <button className={cn(itemClass(isActive('policy')), 'relative')} style={itemStyle(isActive('policy'))} onClick={() => onNavigate('policy')}>
-          <ShieldOff className="w-5 h-5 mb-1" />
-          <span className="text-[10px] leading-tight font-medium">Policy</span>
-          {policyCount > 0 && (
-            <span className="absolute top-1.5 right-2 inline-flex items-center justify-center w-4 h-4 rounded-full bg-destructive text-white text-[8px] font-bold">
-              {policyCount}
-            </span>
-          )}
-        </button>
-
+          );
+        })}
       </nav>
 
       {/* Status indicator at bottom */}
