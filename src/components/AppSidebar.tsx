@@ -53,7 +53,7 @@ const navGroups: NavGroup[] = [
   },
 ];
 
-const CLOSE_DELAY = 150;
+const CLOSE_DELAY = 300;
 
 export const AppSidebar = ({ activeView, onNavigate }: Props) => {
   const [openGroup, setOpenGroup] = useState<string | null>(null);
@@ -163,7 +163,7 @@ export const AppSidebar = ({ activeView, onNavigate }: Props) => {
           })}
         </nav>
 
-        {/* DNS AID toggle + DNS live — pinned to bottom, never compressed */}
+        {/* DNS AID toggle — pinned to bottom, never compressed */}
         <div className="shrink-0 flex flex-col items-center border-t border-black/10">
           <button
             className="flex flex-col items-center justify-center w-full border-l-4 border-transparent transition-colors cursor-pointer"
@@ -179,10 +179,6 @@ export const AppSidebar = ({ activeView, onNavigate }: Props) => {
               {dnsAidEnabled ? 'DNS AID ON' : 'DNS AID OFF'}
             </span>
           </button>
-          <div className="flex flex-col items-center pb-3 pt-1">
-            <span className="w-2 h-2 rounded-full bg-primary animate-pulse mb-1" />
-            <span className="text-[8px] text-foreground/40 font-medium text-center leading-tight px-1">DNS live</span>
-          </div>
         </div>
       </aside>
 
@@ -204,9 +200,9 @@ export const AppSidebar = ({ activeView, onNavigate }: Props) => {
             key={`flyout-${group.id}`}
             className="fixed"
             style={{
-              left: 64,
+              left: 60, // 4px overlap with rail to eliminate dead zone
               top: getFlyoutTop(group.id),
-              width: 220,
+              width: 224,
               zIndex: 50,
               boxShadow: '0 6px 18px rgba(0,0,0,0.12)',
             }}
