@@ -25,9 +25,9 @@ export const MetricCard = ({ label, value, icon, change, variant = 'default', de
     >
       <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-[0.1em]">{label}</p>
       <p className="metric-text text-3xl font-semibold text-card-foreground mt-2">{value}</p>
-      <p className={`text-xs mt-1.5 font-medium min-h-[1rem] ${change ? changeColor[variant] : ''}`}>
-        {change ?? ''}
-      </p>
+      {change && (
+        <p className={`text-xs mt-1.5 font-medium ${changeColor[variant]}`}>{change}</p>
+      )}
     </div>
   </ScrollReveal>
 );
