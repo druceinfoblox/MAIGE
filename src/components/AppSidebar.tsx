@@ -21,7 +21,7 @@ type NavGroup = {
   items: { view: View; icon: React.ElementType; label: string }[];
 };
 
-const navGroups: NavGroup[] = [
+const baseNavGroups: NavGroup[] = [
   {
     id: 'discover',
     label: 'DISCOVER',
@@ -53,6 +53,16 @@ const navGroups: NavGroup[] = [
   },
 ];
 
+const dnsAidGroup: NavGroup = {
+  id: 'dnsaid',
+  label: 'DNS AID',
+  icon: LifeBuoy,
+  items: [
+    { view: 'agent-registry', icon: Database, label: 'Agent Registry' },
+    { view: 'agent-trust-policy', icon: ShieldCheck, label: 'Agent Trust Policy' },
+  ],
+};
+
 const CLOSE_DELAY = 300;
 
 export const AppSidebar = ({ activeView, onNavigate }: Props) => {
@@ -60,6 +70,8 @@ export const AppSidebar = ({ activeView, onNavigate }: Props) => {
   const [dnsAidEnabled, setDnsAidEnabled] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const railItemRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+
+  const navGroups = dnsAidEnabled ? [...baseNavGroups, dnsAidGroup] : baseNavGroups;
 
   const cancelClose = useCallback(() => {
     if (closeTimer.current) {
@@ -163,19 +175,26 @@ export const AppSidebar = ({ activeView, onNavigate }: Props) => {
           })}
         </nav>
 
-        {/* DNS AID toggle — pinned to bottom, never compressed */}
-        <div className="shrink-0 flex flex-col items-center border-t border-black/10">
+        {/* DNS AID toggle — pinned to bottom, separated by border */}
+        <div className="shrink-0 border-t border-black/10">
           <button
-            className="flex flex-col items-center justify-center w-full border-l-4 border-transparent transition-colors cursor-pointer"
+            className="flex flex-col items-center justify-center w-full border-l-4 border-transparent cursor-pointer transition-colors"
             style={{
               height: 56,
-              backgroundColor: dnsAidEnabled ? 'rgba(22,163,74,0.10)' : 'transparent',
+              backgroundColor: dnsAidEnabled ? 'rgba(22,163,74,0.12)' : 'transparent',
               color: dnsAidEnabled ? '#16a34a' : '#7e8588',
             }}
-            onClick={() => setDnsAidEnabled(prev => !prev)}
+            title={dnsAidEnabled ? 'DNS AID ON — click to disable' : 'DNS AID OFF — click to enable'}
+            onClick={() => {
+              setDnsAidEnabled(prev => !prev);
+              // if turning off and currently on a DNS AID view, go back to dashboard
+              if (dnsAidEnabled && (activeView === 'agent-registry' || activeView === 'agent-trust-policy')) {
+                onNavigate('dashboard');
+              }
+            }}
           >
             <LifeBuoy className="w-5 h-5" style={{ color: 'inherit' }} />
-            <span className="text-[8px] leading-tight text-center mt-0.5" style={{ color: 'inherit' }}>
+            <span className="text-[8px] leading-tight text-center mt-0.5 font-medium" style={{ color: 'inherit' }}>
               {dnsAidEnabled ? 'DNS AID ON' : 'DNS AID OFF'}
             </span>
           </button>
@@ -186,14 +205,7 @@ export const AppSidebar = ({ activeView, onNavigate }: Props) => {
       {navGroups.map(group => {
         if (openGroup !== group.id) return null;
 
-        // Inject DNS AID items into GOVERN flyout when enabled
-        const flyoutItems = group.id === 'govern' && dnsAidEnabled
-          ? [
-              ...group.items,
-              { view: 'agent-registry' as View, icon: Database, label: 'Agent Registry' },
-              { view: 'agent-trust-policy' as View, icon: ShieldCheck, label: 'Agent Trust Policy' },
-            ]
-          : group.items;
+        const flyoutItems = group.items;
 
         return (
           <div
