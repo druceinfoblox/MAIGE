@@ -163,26 +163,26 @@ export const AppSidebar = ({ activeView, onNavigate }: Props) => {
           })}
         </nav>
 
-        {/* DNS AID toggle */}
-        <button
-          className="flex flex-col items-center justify-center w-full border-l-4 border-transparent transition-colors"
-          style={{
-            height: 56,
-            backgroundColor: dnsAidEnabled ? 'rgba(22,163,74,0.10)' : 'transparent',
-            color: dnsAidEnabled ? '#16a34a' : '#7e8588',
-          }}
-          onClick={() => setDnsAidEnabled(prev => !prev)}
-        >
-          <LifeBuoy className="w-5 h-5" style={{ color: 'inherit' }} />
-          <span className="text-[8px] leading-tight text-center mt-0.5" style={{ color: 'inherit' }}>
-            {dnsAidEnabled ? 'DNS AID ON' : 'DNS AID OFF'}
-          </span>
-        </button>
-
-        {/* DNS live indicator at bottom of rail */}
-        <div className="flex flex-col items-center pb-4 pt-2 border-t border-black/10">
-          <span className="w-2 h-2 rounded-full bg-primary animate-pulse mb-1" />
-          <span className="text-[8px] text-foreground/40 font-medium text-center leading-tight px-1">DNS live</span>
+        {/* DNS AID toggle + DNS live — pinned to bottom, never compressed */}
+        <div className="shrink-0 flex flex-col items-center border-t border-black/10">
+          <button
+            className="flex flex-col items-center justify-center w-full border-l-4 border-transparent transition-colors cursor-pointer"
+            style={{
+              height: 56,
+              backgroundColor: dnsAidEnabled ? 'rgba(22,163,74,0.10)' : 'transparent',
+              color: dnsAidEnabled ? '#16a34a' : '#7e8588',
+            }}
+            onClick={() => setDnsAidEnabled(prev => !prev)}
+          >
+            <LifeBuoy className="w-5 h-5" style={{ color: 'inherit' }} />
+            <span className="text-[8px] leading-tight text-center mt-0.5" style={{ color: 'inherit' }}>
+              {dnsAidEnabled ? 'DNS AID ON' : 'DNS AID OFF'}
+            </span>
+          </button>
+          <div className="flex flex-col items-center pb-3 pt-1">
+            <span className="w-2 h-2 rounded-full bg-primary animate-pulse mb-1" />
+            <span className="text-[8px] text-foreground/40 font-medium text-center leading-tight px-1">DNS live</span>
+          </div>
         </div>
       </aside>
 
