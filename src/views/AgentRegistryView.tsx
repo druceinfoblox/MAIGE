@@ -73,14 +73,12 @@ export const AgentRegistryView = () => {
           label="DNSSEC Validated"
           value={10}
           icon={<ShieldCheck className="w-5 h-5" />}
-          change="83% coverage"
           delay={0.05}
         />
         <MetricCard
           label="Avg Trust Level"
           value="8.3"
           icon={<Server className="w-5 h-5" />}
-          change="↑ 0.2 from last week"
           delay={0.1}
         />
       </div>
